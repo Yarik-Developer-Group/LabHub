@@ -123,6 +123,17 @@ public class ContentLoaderTests
     }
 
     [Test]
+    public void AssetOnlyFoldersDoNotBecomePages()
+    {
+        var root = NewTempContent();
+        WriteFile(root, "c/lab/index.md", "---\ntitle: Лаба\n---\n![схема](img/a.png)");
+        WriteFile(root, "c/lab/img/a.png", "не-настоящий-png");
+        var snapshot = NewLoader().Load(root);
+        Check.Equal(0, snapshot.Index["c/lab"].Children.Count);
+        Check.False(snapshot.Index.ContainsKey("c/lab/img"), "img — не страница");
+    }
+
+    [Test]
     public void ImagePathInLabIsRewrittenRelativeToItsFolder()
     {
         var root = NewTempContent();

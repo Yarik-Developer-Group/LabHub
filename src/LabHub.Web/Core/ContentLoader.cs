@@ -78,7 +78,12 @@ internal sealed class TreeBuilder
         var slug = Slugify(Path.GetFileName(dir));
         if (IsHidden(slug)) return null;
         var path = CombinePath(parentPath, slug);
-        var (meta, body) = ReadDocument(Path.Combine(dir, "index.md"));
+        var indexFile = Path.Combine(dir, "index.md");
+        var (meta, body) = ReadDocument(indexFile);
+        var children = LoadChildren(dir, path);
+        // Папка без index.md и без md-потомков — хранилище картинок/файлов
+        // лабы (img/ и т.п.), а не страница навигации.
+        if (!File.Exists(indexFile) && children.Count == 0) return null;
         return new ContentNode
         {
             Slug = slug,
@@ -88,7 +93,7 @@ internal sealed class TreeBuilder
             Summary = meta.Summary,
             Track = meta.Track,
             HtmlBody = RenderBody(body, dir),
-            Children = LoadChildren(dir, path)
+            Children = children
         };
     }
 
