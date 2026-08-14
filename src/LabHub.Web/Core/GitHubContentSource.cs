@@ -6,8 +6,6 @@ using Microsoft.Extensions.Options;
 
 namespace LabHub.Web.Core;
 
-/// <summary>Скачивает контент из GitHub одним tarball-запросом и распаковывает
-/// во временную папку. Используется для горячего обновления без рестарта.</summary>
 public sealed partial class GitHubContentSource : IContentSource
 {
     internal static readonly string TempPrefix = Path.Combine(Path.GetTempPath(), "labhub-content");

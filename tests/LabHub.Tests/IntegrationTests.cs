@@ -1,53 +1,21 @@
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using Xunit;
 
 namespace LabHub.Tests;
 
-/// <summary>Интеграционные тесты против живого приложения на локальном порту.
-/// Одно приложение на весь класс: MicroTest выполняет тесты последовательно.</summary>
-public class IntegrationTests
+public class IntegrationTests : IClassFixture<LabHubAppFixture>
 {
-    private const string Secret = "integration-secret";
+    private readonly LabHubAppFixture _fixture;
 
-    private static RunningApp? _shared;
-    private static string _contentDir = "";
+    public IntegrationTests(LabHubAppFixture fixture) => _fixture = fixture;
 
-    private static async Task<RunningApp> AppAsync()
-    {
-        if (_shared is not null) return _shared;
-        _contentDir = CreateFixtureContent();
-        _shared = await TestApp.StartAsync(new Dictionary<string, string?>
-        {
-            ["LabHub:ContentRoot"] = _contentDir,
-            ["LabHub:WebhookSecret"] = Secret,
-            ["LabHub:RefreshMinutes"] = "0"
-        });
-        return _shared;
-    }
-
-    private static string CreateFixtureContent()
-    {
-        var root = Path.Combine(Path.GetTempPath(), "labhub-tests", Guid.NewGuid().ToString("N"));
-        WriteFile(root, "nets/index.md", "---\ntitle: Сети\norder: 1\nsummary: Курс о сетях\n---\nПро сети.");
-        WriteFile(root, "nets/labs/index.md", "---\ntitle: Лабы\n---");
-        WriteFile(root, "nets/labs/lab-a/index.md",
-            "---\ntitle: Лаба А\n---\nТело лабы <script>alert(1)</script>\n\n![схема](img/pic.svg)");
-        WriteFile(root, "nets/labs/lab-a/img/pic.svg",
-            """<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>""");
-        return root;
-    }
-
-    private static void WriteFile(string root, string relative, string text)
-    {
-        var path = Path.Combine(root, relative);
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, text);
-    }
+    private HttpClient Client => _fixture.App.Client;
 
     private static string Sign(string payload)
     {
-        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(Secret));
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(LabHubAppFixture.WebhookSecret));
         return "sha256=" + Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(payload))).ToLowerInvariant();
     }
 
@@ -61,140 +29,142 @@ public class IntegrationTests
         return request;
     }
 
-    [Test]
+    [Fact]
     public async Task HomePageListsCourses()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/");
+        var response = await Client.GetAsync("/");
         var html = await response.Content.ReadAsStringAsync();
-        Check.Equal(HttpStatusCode.OK, response.StatusCode);
-        Check.Contains("Сети", html);
-        Check.Contains("Курс о сетях", html);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("Сети", html);
+        Assert.Contains("Курс о сетях", html);
     }
 
-    [Test]
+    [Fact]
     public async Task LabPageRendersMarkdownWithBreadcrumbs()
     {
-        var app = await AppAsync();
-        var html = await app.Client.GetStringAsync("/c/nets/labs/lab-a");
-        Check.Contains("Лаба А", html);
-        Check.Contains("breadcrumbs", html);
-        Check.Contains(">Сети</a>", html);
-        Check.Contains("src=\"/assets/nets/labs/lab-a/img/pic.svg\"", html);
+        var html = await Client.GetStringAsync("/c/nets/labs/lab-a");
+
+        Assert.Contains("Лаба А", html);
+        Assert.Contains("breadcrumbs", html);
+        Assert.Contains(">Сети</a>", html);
+        Assert.Contains("src=\"/assets/nets/labs/lab-a/img/pic.svg\"", html);
     }
 
-    [Test]
+    [Fact]
     public async Task RawHtmlInContentIsEscaped()
     {
-        var app = await AppAsync();
-        var html = await app.Client.GetStringAsync("/c/nets/labs/lab-a");
-        Check.DoesNotContain("<script>alert", html);
-        Check.Contains("&lt;script&gt;", html);
+        var html = await Client.GetStringAsync("/c/nets/labs/lab-a");
+
+        Assert.DoesNotContain("<script>alert", html);
+        Assert.Contains("&lt;script&gt;", html);
     }
 
-    [Test]
+    [Fact]
     public async Task UnknownPageGivesFriendly404()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/c/no/such/lab");
-        Check.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Check.Contains("не найдена", await response.Content.ReadAsStringAsync());
+        var response = await Client.GetAsync("/c/no/such/lab");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Contains("не найдена", await response.Content.ReadAsStringAsync());
     }
 
-    [Test]
+    [Fact]
     public async Task HealthEndpointResponds()
     {
-        var app = await AppAsync();
-        Check.Equal("ok", await app.Client.GetStringAsync("/healthz"));
+        Assert.Equal("ok", await Client.GetStringAsync("/healthz"));
     }
 
-    [Test]
+    [Fact]
     public async Task SecurityHeadersAreOnEveryResponse()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/");
-        Check.Equal("nosniff", response.Headers.GetValues("X-Content-Type-Options").First());
-        Check.Equal("DENY", response.Headers.GetValues("X-Frame-Options").First());
-        Check.Contains("default-src 'self'", response.Headers.GetValues("Content-Security-Policy").First());
+        var response = await Client.GetAsync("/");
+
+        Assert.Equal("nosniff", response.Headers.GetValues("X-Content-Type-Options").First());
+        Assert.Equal("DENY", response.Headers.GetValues("X-Frame-Options").First());
+        Assert.Contains("default-src 'self'", response.Headers.GetValues("Content-Security-Policy").First());
     }
 
-    [Test]
+    [Fact]
     public async Task AssetIsServedWithSafeHeaders()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/assets/nets/labs/lab-a/img/pic.svg");
-        Check.Equal(HttpStatusCode.OK, response.StatusCode);
-        Check.Equal("image/svg+xml", response.Content.Headers.ContentType!.MediaType);
-        Check.Contains("default-src 'none'", response.Headers.GetValues("Content-Security-Policy").First());
+        var response = await Client.GetAsync("/assets/nets/labs/lab-a/img/pic.svg");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("image/svg+xml", response.Content.Headers.ContentType!.MediaType);
+        Assert.Contains("default-src 'none'", response.Headers.GetValues("Content-Security-Policy").First());
     }
 
-    [Test]
+    [Fact]
     public async Task AssetPathTraversalIsBlocked()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/assets/%2e%2e/nets/index.md");
-        Check.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        var response = await Client.GetAsync("/assets/%2e%2e/nets/index.md");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Test]
+    [Fact]
     public async Task MarkdownSourceIsNotDownloadable()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/assets/nets/index.md");
-        Check.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        var response = await Client.GetAsync("/assets/nets/index.md");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Test]
+    [Fact]
     public async Task WebhookWithBadSignatureIsRejected()
     {
-        var app = await AppAsync();
-        var response = await app.Client.SendAsync(WebhookRequest("{}", "sha256=" + new string('0', 64)));
-        Check.Equal(HttpStatusCode.Forbidden, response.StatusCode);
-        var missing = await app.Client.SendAsync(WebhookRequest("{}", null));
-        Check.Equal(HttpStatusCode.Forbidden, missing.StatusCode);
+        var badSignature = await Client.SendAsync(WebhookRequest("{}", "sha256=" + new string('0', 64)));
+        var noSignature = await Client.SendAsync(WebhookRequest("{}", null));
+
+        Assert.Equal(HttpStatusCode.Forbidden, badSignature.StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, noSignature.StatusCode);
     }
 
-    [Test]
+    [Fact]
     public async Task WebhookWithValidSignatureHotSwapsContent()
     {
-        var app = await AppAsync();
-        var before = await app.Client.GetAsync("/c/nets/labs/lab-b");
-        Check.Equal(HttpStatusCode.NotFound, before.StatusCode);
-        WriteFile(_contentDir, "nets/labs/lab-b.md", "---\ntitle: Лаба Б\n---\nНовая лаба без рестарта");
+        var before = await Client.GetAsync("/c/nets/labs/lab-b");
+        Assert.Equal(HttpStatusCode.NotFound, before.StatusCode);
+
+        LabHubAppFixture.WriteFile(_fixture.ContentDir, "nets/labs/lab-b.md",
+            "---\ntitle: Лаба Б\n---\nНовая лаба без рестарта");
         var payload = """{"ref":"refs/heads/main"}""";
-        var response = await app.Client.SendAsync(WebhookRequest(payload, Sign(payload)));
-        Check.Equal(HttpStatusCode.OK, response.StatusCode);
-        var after = await app.Client.GetStringAsync("/c/nets/labs/lab-b");
-        Check.Contains("Новая лаба без рестарта", after);
+        var response = await Client.SendAsync(WebhookRequest(payload, Sign(payload)));
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("Новая лаба без рестарта", await Client.GetStringAsync("/c/nets/labs/lab-b"));
     }
 
-    [Test]
+    [Fact]
     public async Task WebhookIsHiddenWhenSecretNotConfigured()
     {
-        var contentDir = CreateFixtureContent();
+        var contentDir = LabHubAppFixture.CreateFixtureContent();
         await using var app = await TestApp.StartAsync(new Dictionary<string, string?>
         {
             ["LabHub:ContentRoot"] = contentDir,
             ["LabHub:RefreshMinutes"] = "0"
         });
+
         var response = await app.Client.SendAsync(WebhookRequest("{}", Sign("{}")));
-        Check.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Test]
+    [Fact]
     public async Task AdminRedirectsAnonymousToLogin()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/admin");
-        Check.Equal(HttpStatusCode.Found, response.StatusCode);
-        Check.Contains("/login", response.Headers.Location!.ToString());
+        var response = await Client.GetAsync("/admin");
+
+        Assert.Equal(HttpStatusCode.Found, response.StatusCode);
+        Assert.Contains("/login", response.Headers.Location!.ToString());
     }
 
-    [Test]
+    [Fact]
     public async Task LoginReportsAuthNotConfigured()
     {
-        var app = await AppAsync();
-        var response = await app.Client.GetAsync("/login");
-        Check.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        var response = await Client.GetAsync("/login");
+
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
     }
 }

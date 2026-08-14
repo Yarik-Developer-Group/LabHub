@@ -15,7 +15,6 @@ indent_size = 2
 trim_trailing_whitespace = false
 
 [*.cs]
-# Стиль проекта LabHub
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_expression_bodied_methods = when_on_single_line:suggestion
@@ -24,5 +23,3 @@ csharp_prefer_braces = true:suggestion
 dotnet_sort_system_directives_first = true
 dotnet_style_require_accessibility_modifiers = always:warning
 
-# Правила проекта: функции ≤ 3 параметров и ≤ 30 строк — проверяются
-# скриптом tools/check_style.py в CI.

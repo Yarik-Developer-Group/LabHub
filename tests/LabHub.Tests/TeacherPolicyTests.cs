@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using LabHub.Web.Security;
+using Xunit;
 
 namespace LabHub.Tests;
 
@@ -14,40 +15,35 @@ public class TeacherPolicyTests
         return new ClaimsPrincipal(identity);
     }
 
-    [Test]
-    public void AllowlistedEmailIsTeacher()
+    [Theory]
+    [InlineData("teacher@example.com")]
+    [InlineData("TEACHER@Example.Com")]
+    public void AllowlistedEmailIsTeacherIgnoringCase(string email)
     {
-        Check.True(TeacherPolicy.IsTeacher(UserWithEmail("teacher@example.com"), Teachers), "teacher");
+        Assert.True(TeacherPolicy.IsTeacher(UserWithEmail(email), Teachers));
     }
 
-    [Test]
-    public void EmailComparisonIgnoresCase()
-    {
-        Check.True(TeacherPolicy.IsTeacher(UserWithEmail("TEACHER@Example.Com"), Teachers), "case-insensitive");
-    }
-
-    [Test]
+    [Fact]
     public void UnknownEmailIsNotTeacher()
     {
-        Check.False(TeacherPolicy.IsTeacher(UserWithEmail("student@example.com"), Teachers), "student");
+        Assert.False(TeacherPolicy.IsTeacher(UserWithEmail("student@example.com"), Teachers));
     }
 
-    [Test]
+    [Fact]
     public void MissingEmailClaimIsNotTeacher()
     {
-        Check.False(TeacherPolicy.IsTeacher(UserWithEmail(null), Teachers), "no email claim");
+        Assert.False(TeacherPolicy.IsTeacher(UserWithEmail(null), Teachers));
     }
 
-    [Test]
+    [Fact]
     public void UnauthenticatedUserIsNotTeacher()
     {
-        Check.False(TeacherPolicy.IsTeacher(UserWithEmail("teacher@example.com", authenticated: false), Teachers),
-            "unauthenticated");
+        Assert.False(TeacherPolicy.IsTeacher(UserWithEmail("teacher@example.com", authenticated: false), Teachers));
     }
 
-    [Test]
+    [Fact]
     public void EmptyAllowlistRejectsEveryone()
     {
-        Check.False(TeacherPolicy.IsTeacher(UserWithEmail("teacher@example.com"), []), "empty allowlist");
+        Assert.False(TeacherPolicy.IsTeacher(UserWithEmail("teacher@example.com"), []));
     }
 }

@@ -1,7 +1,5 @@
 namespace LabHub.Web.Endpoints;
 
-/// <summary>Безопасное разрешение путей к файлам контента: запрет выхода за
-/// корень (path traversal) и allowlist типов файлов.</summary>
 public static class AssetPathResolver
 {
     private static readonly Dictionary<string, string> ContentTypes = new(StringComparer.OrdinalIgnoreCase)

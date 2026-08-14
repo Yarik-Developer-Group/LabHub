@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LabHub.Web.Security;
 
-/// <summary>Google-вход через встроенный OAuth-хендлер ASP.NET Core (без внешних
-/// пакетов). Если ClientId не задан — публичная часть работает, вход отключён.</summary>
 public static class AuthSetup
 {
     public const string GoogleScheme = "Google";

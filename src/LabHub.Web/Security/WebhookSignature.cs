@@ -3,8 +3,6 @@ using System.Text;
 
 namespace LabHub.Web.Security;
 
-/// <summary>Проверка подписи GitHub-webhook (X-Hub-Signature-256).
-/// Сравнение — за постоянное время, чтобы исключить timing-атаки.</summary>
 public static class WebhookSignature
 {
     private const string Prefix = "sha256=";

@@ -5,9 +5,6 @@ using Markdig.Syntax.Inlines;
 
 namespace LabHub.Web.Core;
 
-/// <summary>Markdown → HTML. Безопасность: сырой HTML в markdown отключён
-/// (экранируется как текст), опасные url-схемы в ссылках вычищаются,
-/// относительные пути картинок переписываются на /assets/.</summary>
 public static class MarkdownRenderer
 {
     private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()

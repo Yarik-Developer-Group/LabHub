@@ -16,7 +16,7 @@ public static class Startup
         var services = builder.Services;
         services.Configure<LabHubOptions>(builder.Configuration.GetSection(LabHubOptions.SectionName));
         services.Configure<ForwardedHeadersOptions>(ConfigureForwardedHeaders);
-        // Кириллица в HTML как текст, а не &#x...; — читабельно и компактнее.
+
         services.Configure<WebEncoderOptions>(o =>
             o.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic));
         services.AddRazorPages();
@@ -46,8 +46,6 @@ public static class Startup
         AuthEndpoints.Map(app);
     }
 
-    /// <summary>Первичная загрузка контента, приехавшего с деплоем. Ошибка не
-    /// мешает старту: сайт поднимется пустым и добёрет контент из GitHub.</summary>
     public static void LoadInitialContent(WebApplication app)
     {
         try
@@ -75,7 +73,7 @@ public static class Startup
 
     private static void ConfigureForwardedHeaders(ForwardedHeadersOptions options)
     {
-        // Azure App Service терминирует TLS на своём балансировщике.
+
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
         options.KnownNetworks.Clear();
         options.KnownProxies.Clear();

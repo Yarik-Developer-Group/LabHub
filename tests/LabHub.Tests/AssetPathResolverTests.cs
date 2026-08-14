@@ -1,4 +1,5 @@
 using LabHub.Web.Endpoints;
+using Xunit;
 
 namespace LabHub.Tests;
 
@@ -6,34 +7,39 @@ public class AssetPathResolverTests
 {
     private static readonly string Root = Path.Combine(Path.GetTempPath(), "labhub-asset-tests");
 
-    [Test]
+    [Fact]
     public void NormalPathResolvesInsideRoot()
     {
-        Check.True(AssetPathResolver.TryResolve(Root, "db/labs/img/schema.png", out var full), "resolves");
-        Check.True(full.StartsWith(Root, StringComparison.Ordinal), "inside root");
+        Assert.True(AssetPathResolver.TryResolve(Root, "db/labs/img/schema.png", out var full));
+        Assert.StartsWith(Root, full, StringComparison.Ordinal);
     }
 
-    [Test]
-    public void ParentTraversalIsBlocked()
+    [Theory]
+    [InlineData("../appsettings.json")]
+    [InlineData("db/../../etc/passwd")]
+    [InlineData("/etc/passwd")]
+    [InlineData("a\0b.png")]
+    public void TraversalRootedAndNullBytePathsAreBlocked(string path)
     {
-        Check.False(AssetPathResolver.TryResolve(Root, "../appsettings.json", out _), "..");
-        Check.False(AssetPathResolver.TryResolve(Root, "db/../../etc/passwd", out _), "nested ..");
+        Assert.False(AssetPathResolver.TryResolve(Root, path, out _));
     }
 
-    [Test]
-    public void RootedAndNullBytePathsAreBlocked()
+    [Theory]
+    [InlineData("x/схема.png", "image/png")]
+    [InlineData("a.SVG", "image/svg+xml")]
+    [InlineData("doc.pdf", "application/pdf")]
+    public void AllowlistedExtensionsGetContentType(string path, string expected)
     {
-        Check.False(AssetPathResolver.TryResolve(Root, "/etc/passwd", out _), "rooted");
-        Check.False(AssetPathResolver.TryResolve(Root, "a\0b.png", out _), "null byte");
+        Assert.Equal(expected, AssetPathResolver.GetContentType(path));
     }
 
-    [Test]
-    public void OnlyAllowlistedExtensionsGetContentType()
+    [Theory]
+    [InlineData("evil.html")]
+    [InlineData("lab.md")]
+    [InlineData("noext")]
+    [InlineData("script.cs")]
+    public void OtherExtensionsAreRejected(string path)
     {
-        Check.Equal("image/png", AssetPathResolver.GetContentType("x/схема.png"));
-        Check.Equal("image/svg+xml", AssetPathResolver.GetContentType("a.SVG"));
-        Check.Equal(null, AssetPathResolver.GetContentType("evil.html"));
-        Check.Equal(null, AssetPathResolver.GetContentType("lab.md"));
-        Check.Equal(null, AssetPathResolver.GetContentType("noext"));
+        Assert.Null(AssetPathResolver.GetContentType(path));
     }
 }

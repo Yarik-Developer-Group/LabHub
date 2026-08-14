@@ -3,12 +3,9 @@ name: deploy
 on:
   push:
     branches: [main]
-    # Правки только в content/ не пересобирают приложение —
-    # их подхватывает webhook на /api/content/refresh без рестарта.
     paths:
       - 'src/**'
       - 'tests/**'
-      - 'third_party/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -22,10 +19,10 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Tests (гейт — при падении деплоя не будет)
-        run: dotnet run -c Release --project tests/LabHub.Tests
+      - name: Tests
+        run: dotnet test -c Release
 
-      - name: Style check (функции ≤ 3 параметров, ≤ 30 строк)
+      - name: Style check
         run: python3 tools/check_style.py
 
       - name: Publish

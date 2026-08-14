@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using LabHub.Web.Security;
+using Xunit;
 
 namespace LabHub.Tests;
 
@@ -14,39 +15,44 @@ public class WebhookSignatureTests
         return "sha256=" + Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(payload))).ToLowerInvariant();
     }
 
-    [Test]
+    [Fact]
     public void ValidSignaturePasses()
     {
         var payload = """{"ref":"refs/heads/main"}""";
-        Check.True(WebhookSignature.IsValid(payload, Sign(payload, Secret), Secret), "valid signature");
+
+        Assert.True(WebhookSignature.IsValid(payload, Sign(payload, Secret), Secret));
     }
 
-    [Test]
+    [Fact]
     public void WrongSecretFails()
     {
         var payload = "{}";
-        Check.False(WebhookSignature.IsValid(payload, Sign(payload, "другой"), Secret), "wrong secret");
+
+        Assert.False(WebhookSignature.IsValid(payload, Sign(payload, "другой"), Secret));
     }
 
-    [Test]
+    [Fact]
     public void TamperedPayloadFails()
     {
-        Check.False(WebhookSignature.IsValid("{\"a\":2}", Sign("{\"a\":1}", Secret), Secret), "tampered payload");
+        Assert.False(WebhookSignature.IsValid("{\"a\":2}", Sign("{\"a\":1}", Secret), Secret));
     }
 
-    [Test]
-    public void MissingOrMalformedHeaderFails()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("sha1=abc")]
+    [InlineData("sha256=не-hex")]
+    [InlineData("sha256=")]
+    public void MissingOrMalformedHeaderFails(string? header)
     {
-        Check.False(WebhookSignature.IsValid("{}", null, Secret), "null header");
-        Check.False(WebhookSignature.IsValid("{}", "", Secret), "empty header");
-        Check.False(WebhookSignature.IsValid("{}", "sha1=abc", Secret), "wrong algo prefix");
-        Check.False(WebhookSignature.IsValid("{}", "sha256=не-hex", Secret), "not hex");
+        Assert.False(WebhookSignature.IsValid("{}", header, Secret));
     }
 
-    [Test]
+    [Fact]
     public void EmptySecretAlwaysFails()
     {
         var payload = "{}";
-        Check.False(WebhookSignature.IsValid(payload, Sign(payload, ""), ""), "empty secret");
+
+        Assert.False(WebhookSignature.IsValid(payload, Sign(payload, ""), ""));
     }
 }

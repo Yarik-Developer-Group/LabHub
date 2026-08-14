@@ -31,7 +31,7 @@ headers на каждом ответе, антифорджери на форма
 
 ```bash
 dotnet run --project src/LabHub.Web        # http://localhost:5204
-dotnet run --project tests/LabHub.Tests    # 56 тестов, ненулевой код = провал
+dotnet test                                # xunit, 77 тестов
 python3 tools/check_style.py               # правила: ≤3 параметров, ≤30 строк
 ```
 
@@ -129,20 +129,13 @@ keep-alive, и алерт «сайт упал». Редкие холодные �
 
 ## Тесты
 
-Собственный мини-раннер (`tests/LabHub.Tests/MicroTest.cs`, ~100 строк) вместо
-xunit — осознанно: проект собирается и тестируется полностью офлайн, без NuGet.
-Юнит-тесты покрывают парсер front-matter, рендер markdown (включая экранирование
-HTML и вычистку `javascript:`), HMAC-подпись, allowlist преподавателей, защиту
-от path traversal, загрузчик дерева. Интеграционные — поднимают настоящее
-приложение на локальном порту и проверяют страницы, 404, security headers,
-webhook (включая горячую подмену контента) и редирект админки. Захотите xunit —
-атрибуты `[Test]` меняются на `[Fact]`, `Check` на `Assert`, полчаса работы.
-
-## Вендоренный Markdig
-
-`third_party/Markdig` — исходники [Markdig](https://github.com/xoofx/markdig)
-0.37.0 (BSD-2-Clause, лицензия приложена). Вкомпилирован исходниками, чтобы
-сборка не зависела от NuGet. Можно заменить на `PackageReference` в одну строку.
+xunit, запуск — `dotnet test` (или Test Explorer в Visual Studio). Юнит-тесты
+покрывают парсер front-matter, рендер markdown (включая экранирование HTML и
+вычистку `javascript:`), HMAC-подпись webhook, allowlist преподавателей, защиту
+от path traversal и загрузчик дерева контента. Интеграционные — через class
+fixture поднимают настоящее приложение на локальном порту и гоняют его обычным
+HttpClient: страницы, 404, security headers, webhook (включая горячую подмену
+контента без рестарта) и редирект админки на вход.
 
 ## Куда расти
 

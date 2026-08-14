@@ -1,7 +1,5 @@
 namespace LabHub.Web.Core;
 
-/// <summary>Строит снимок контента из папки. Битый файл или папка не роняют
-/// загрузку целиком: запись пропускается, предупреждение уходит в лог.</summary>
 public sealed class ContentLoader
 {
     private readonly ILogger<ContentLoader> _logger;
@@ -81,8 +79,7 @@ internal sealed class TreeBuilder
         var indexFile = Path.Combine(dir, "index.md");
         var (meta, body) = ReadDocument(indexFile);
         var children = LoadChildren(dir, path);
-        // Папка без index.md и без md-потомков — хранилище картинок/файлов
-        // лабы (img/ и т.п.), а не страница навигации.
+
         if (!File.Exists(indexFile) && children.Count == 0) return null;
         return new ContentNode
         {

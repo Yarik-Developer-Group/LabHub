@@ -9,5 +9,4 @@ Startup.LoadInitialContent(app);
 
 app.Run();
 
-/// <summary>Маркер для интеграционных тестов.</summary>
 public partial class Program;

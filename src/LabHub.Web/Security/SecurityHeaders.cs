@@ -1,7 +1,5 @@
 namespace LabHub.Web.Security;
 
-/// <summary>Заголовки безопасности на каждый ответ. CSP строгий: только свои
-/// ресурсы, без inline-скриптов; сайт нельзя встраивать во фреймы.</summary>
 public static class SecurityHeaders
 {
     public static IApplicationBuilder UseSecurityHeaders(this IApplicationBuilder app) =>

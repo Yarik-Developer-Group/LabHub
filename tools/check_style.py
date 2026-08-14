@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-"""Проверка правил проекта: методы <= 30 строк тела и <= 3 параметров.
-Эвристика по исходникам C# (src/ и tests/, third_party не проверяем)."""
 import re
 import sys
 from pathlib import Path
@@ -34,14 +32,14 @@ def body_lines(lines: list[str], start: int) -> int:
     for i in range(start, len(lines)):
         line = lines[i]
         if '=>' in line and not opened and '{' not in line:
-            return 1  # expression-bodied
+            return 1
         depth += line.count('{') - line.count('}')
         if '{' in line:
             opened = True
         if opened:
             n += 1
         if opened and depth == 0:
-            return max(0, n - 2)  # без строк с самими скобками
+            return max(0, n - 2)
     return n
 
 def main() -> int:

@@ -8,12 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Markdig вендорен исходниками (third_party/Markdig, BSD-2-Clause):
-         сборка не зависит от доступности NuGet. -->
-    <ProjectReference Include="..\..\third_party\Markdig\Markdig.csproj" />
+    <PackageReference Include="Markdig" Version="0.37.0" />
   </ItemGroup>
 
-  <!-- Контент едет в выходной пакет вместе с приложением: /content рядом с кодом. -->
   <ItemGroup>
     <Content Include="..\..\content\**" LinkBase="content\" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>

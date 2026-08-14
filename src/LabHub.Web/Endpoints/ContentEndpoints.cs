@@ -17,10 +17,6 @@ public static class ContentEndpoints
 
     private static IResult Health() => Results.Text("ok");
 
-    /// <summary>GitHub-webhook: секрет не задан — endpoint «не существует»,
-    /// подпись не сошлась — 403. Ошибка обновления не роняет приложение.
-    /// IOptionsMonitor берём из RequestServices: у minimal API открытые дженерики
-    /// не распознаются как сервисы и попали бы в биндинг тела запроса.</summary>
     private static async Task<IResult> RefreshAsync(HttpContext http, ContentRefresher refresher)
     {
         var options = http.RequestServices.GetRequiredService<IOptionsMonitor<LabHubOptions>>();
@@ -38,10 +34,8 @@ public static class ContentEndpoints
         return ApiError(500, "content refresh failed");
     }
 
-    /// <summary>Ошибка API с JSON-телом: непустой ответ не перехватывается
-    /// StatusCodePages и не ре-исполняется HTML-страницей ошибки.</summary>
     private static IResult ApiError(int statusCode, string error) =>
-        Results.Json(new { error }, statusCode: statusCode);
+    Results.Json(new { error }, statusCode: statusCode);
 
     private static IResult ServeAsset(string assetPath, ContentStore store, HttpContext http)
     {

@@ -1,31 +1,36 @@
 using LabHub.Web.Core;
+using Xunit;
 
 namespace LabHub.Tests;
 
 public class ContentPathResolverTests
 {
-    [Test]
+    [Fact]
     public void AbsolutePathIsReturnedAsIs()
     {
-        var абс = Path.Combine(Path.GetTempPath(), "labhub-abs");
-        Check.Equal(Path.GetFullPath(абс), ContentPathResolver.Resolve("/anywhere", абс));
+        var absolute = Path.Combine(Path.GetTempPath(), "labhub-abs");
+
+        Assert.Equal(Path.GetFullPath(absolute), ContentPathResolver.Resolve("/anywhere", absolute));
     }
 
-    [Test]
+    [Fact]
     public void RelativePathIsFoundInParentDirectory()
     {
         var root = Path.Combine(Path.GetTempPath(), "labhub-resolve", Guid.NewGuid().ToString("N"));
         var nested = Path.Combine(root, "src", "web");
         Directory.CreateDirectory(nested);
         Directory.CreateDirectory(Path.Combine(root, "content"));
-        Check.Equal(Path.Combine(root, "content"), ContentPathResolver.Resolve(nested, "content"));
+
+        Assert.Equal(Path.Combine(root, "content"), ContentPathResolver.Resolve(nested, "content"));
     }
 
-    [Test]
+    [Fact]
     public void MissingRelativePathFallsBackToBase()
     {
         var basePath = Path.Combine(Path.GetTempPath(), "labhub-resolve-miss");
-        Check.Equal(Path.GetFullPath(Path.Combine(basePath, "no-content")),
+
+        Assert.Equal(
+            Path.GetFullPath(Path.Combine(basePath, "no-content")),
             ContentPathResolver.Resolve(basePath, "no-content"));
     }
 }

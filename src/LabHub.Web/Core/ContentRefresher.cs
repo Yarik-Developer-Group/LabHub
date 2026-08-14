@@ -1,7 +1,5 @@
 namespace LabHub.Web.Core;
 
-/// <summary>Оркестратор обновления: источник → загрузка → атомарная подмена.
-/// Любая ошибка не роняет приложение — старый снимок продолжает работать.</summary>
 public sealed class ContentRefresher
 {
     private readonly IContentSource _source;
@@ -51,7 +49,7 @@ public sealed class ContentRefresher
         }
         catch (Exception)
         {
-            // Мусор во временной папке не стоит ошибки: приберём в следующий раз.
+
         }
     }
 

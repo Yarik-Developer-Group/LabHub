@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LabHub.Web.Pages;
 
-/// <summary>Единая страница ошибок: и для исключений (500), и для статус-кодов
-/// (404, 403...). Никаких деталей исключения наружу не уходит. Antiforgery
-/// отключён: сюда ре-исполняются в том числе POST-запросы без токена.</summary>
 [IgnoreAntiforgeryToken]
 public class ErrorModel : PageModel
 {

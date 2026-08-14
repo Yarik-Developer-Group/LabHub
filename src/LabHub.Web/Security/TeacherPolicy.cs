@@ -5,7 +5,6 @@ using LabHub.Web.Core;
 
 namespace LabHub.Web.Security;
 
-/// <summary>Правило «преподаватель»: аутентифицирован и email в allowlist.</summary>
 public static class TeacherPolicy
 {
     public const string Name = "Teacher";

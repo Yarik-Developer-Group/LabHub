@@ -2,8 +2,6 @@ using Microsoft.Extensions.Options;
 
 namespace LabHub.Web.Core;
 
-/// <summary>Фоновая сверка с GitHub: подстраховка на случай потерянного webhook.
-/// Работает только когда настроен GitHub-источник.</summary>
 public sealed class ContentRefreshService : BackgroundService
 {
     private readonly ContentRefresher _refresher;
@@ -32,7 +30,7 @@ public sealed class ContentRefreshService : BackgroundService
         }
         catch (OperationCanceledException)
         {
-            // Штатная остановка приложения.
+
         }
     }
 

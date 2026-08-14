@@ -1,7 +1,5 @@
 namespace LabHub.Web.Core;
 
-/// <summary>Держатель текущего снимка контента. Swap атомарен: читатели видят
-/// либо целиком старый, либо целиком новый контент, без блокировок.</summary>
 public sealed class ContentStore
 {
     private volatile ContentSnapshot _current = ContentSnapshot.Empty;

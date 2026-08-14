@@ -1,61 +1,74 @@
 using LabHub.Web.Core;
+using Xunit;
 
 namespace LabHub.Tests;
 
 public class MarkdownRendererTests
 {
-    [Test]
+    [Fact]
     public void RendersBasicMarkdown()
     {
         var html = MarkdownRenderer.Render("## Заголовок\n\n**жирный** и `код`", "/assets");
-        Check.Contains("<h2", html);
-        Check.Contains("<strong>жирный</strong>", html);
-        Check.Contains("<code>код</code>", html);
+
+        Assert.Contains("<h2", html);
+        Assert.Contains("<strong>жирный</strong>", html);
+        Assert.Contains("<code>код</code>", html);
     }
 
-    [Test]
+    [Fact]
     public void RawHtmlIsEscapedNotExecuted()
     {
         var html = MarkdownRenderer.Render("до <script>alert(1)</script> после", "/assets");
-        Check.DoesNotContain("<script>", html);
-        Check.Contains("&lt;script&gt;", html);
+
+        Assert.DoesNotContain("<script>", html);
+        Assert.Contains("&lt;script&gt;", html);
     }
 
-    [Test]
-    public void JavascriptUrlsAreNeutralized()
+    [Theory]
+    [InlineData("[клик](javascript:alert(1))")]
+    [InlineData("[клик](JavaScript:alert(1))")]
+    [InlineData("[клик](vbscript:msgbox)")]
+    [InlineData("![пиксель](data:image/png;base64,AAAA)")]
+    public void DangerousUrlSchemesAreNeutralized(string markdown)
     {
-        var html = MarkdownRenderer.Render("[клик](javascript:alert(1))", "/assets");
-        Check.DoesNotContain("javascript:", html);
-        Check.Contains("href=\"#\"", html);
+        var html = MarkdownRenderer.Render(markdown, "/assets");
+
+        Assert.DoesNotContain("javascript:", html);
+        Assert.DoesNotContain("vbscript:", html);
+        Assert.DoesNotContain("data:", html);
     }
 
-    [Test]
+    [Fact]
     public void RelativeImagePathIsRewrittenToAssets()
     {
         var html = MarkdownRenderer.Render("![схема](img/schema.png)", "/assets/db/labs/lab-1");
-        Check.Contains("src=\"/assets/db/labs/lab-1/img/schema.png\"", html);
+
+        Assert.Contains("src=\"/assets/db/labs/lab-1/img/schema.png\"", html);
     }
 
-    [Test]
+    [Fact]
     public void DotSlashImagePathIsNormalized()
     {
         var html = MarkdownRenderer.Render("![схема](./img/schema.png)", "/assets/x");
-        Check.Contains("src=\"/assets/x/img/schema.png\"", html);
+
+        Assert.Contains("src=\"/assets/x/img/schema.png\"", html);
     }
 
-    [Test]
+    [Fact]
     public void AbsoluteAndExternalUrlsAreLeftAlone()
     {
         var html = MarkdownRenderer.Render("![a](/assets/direct.png) [b](https://example.com)", "/assets/x");
-        Check.Contains("src=\"/assets/direct.png\"", html);
-        Check.Contains("href=\"https://example.com\"", html);
+
+        Assert.Contains("src=\"/assets/direct.png\"", html);
+        Assert.Contains("href=\"https://example.com\"", html);
     }
 
-    [Test]
+    [Fact]
     public void PipeTablesAreRendered()
     {
         var html = MarkdownRenderer.Render("| a | b |\n|---|---|\n| 1 | 2 |", "/assets");
-        Check.Contains("<table>", html);
-        Check.Contains("<td>1</td>", html);
+
+        Assert.Contains("<table>", html);
+        Assert.Contains("<td>1</td>", html);
     }
 }

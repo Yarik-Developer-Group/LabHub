@@ -1,6 +1,5 @@
 namespace LabHub.Web.Core;
 
-/// <summary>Метаданные md-файла из front-matter блока между "---".</summary>
 public sealed record FrontMatter
 {
     public string? Title { get; init; }
@@ -9,8 +8,6 @@ public sealed record FrontMatter
     public string? Track { get; init; }
 }
 
-/// <summary>Разбор простого front-matter формата "key: value". Битый заголовок
-/// не роняет разбор: файл считается обычным markdown без метаданных.</summary>
 public static class FrontMatterParser
 {
     public static (FrontMatter Meta, string Body) Parse(string text)
