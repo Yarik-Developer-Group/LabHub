@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{53438BD5-9362-4C91-848D-5BB9FBFEE2BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabHub.Web", "src\LabHub.Web\LabHub.Web.csproj", "{58FFFA7C-EE8E-471E-894D-B14350691D51}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C59EBFD7-5E11-44CE-8651-BA3F8A0965E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabHub.Tests", "tests\LabHub.Tests\LabHub.Tests.csproj", "{750E4E47-9009-4898-9A99-67820E17698B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "third_party", "third_party", "{BADEA764-A2AC-49EF-9651-442023D32EED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdig", "third_party\Markdig\Markdig.csproj", "{12B210C4-5D05-42B4-8A04-22C17F961638}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A1B60E3-4F1E-4B5B-9C39-2B8B1E7D0A11}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		README.md = README.md
+		.github\workflows\deploy.yml = .github\workflows\deploy.yml
+		tools\check_style.py = tools\check_style.py
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58FFFA7C-EE8E-471E-894D-B14350691D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58FFFA7C-EE8E-471E-894D-B14350691D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58FFFA7C-EE8E-471E-894D-B14350691D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58FFFA7C-EE8E-471E-894D-B14350691D51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{750E4E47-9009-4898-9A99-67820E17698B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{750E4E47-9009-4898-9A99-67820E17698B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{750E4E47-9009-4898-9A99-67820E17698B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{750E4E47-9009-4898-9A99-67820E17698B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12B210C4-5D05-42B4-8A04-22C17F961638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B210C4-5D05-42B4-8A04-22C17F961638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B210C4-5D05-42B4-8A04-22C17F961638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B210C4-5D05-42B4-8A04-22C17F961638}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{58FFFA7C-EE8E-471E-894D-B14350691D51} = {53438BD5-9362-4C91-848D-5BB9FBFEE2BE}
+		{750E4E47-9009-4898-9A99-67820E17698B} = {C59EBFD7-5E11-44CE-8651-BA3F8A0965E0}
+		{12B210C4-5D05-42B4-8A04-22C17F961638} = {BADEA764-A2AC-49EF-9651-442023D32EED}
+	EndGlobalSection
+EndGlobal

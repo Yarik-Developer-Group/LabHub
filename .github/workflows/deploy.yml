@@ -1,0 +1,39 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+    # Правки только в content/ не пересобирают приложение —
+    # их подхватывает webhook на /api/content/refresh без рестарта.
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'third_party/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Tests (гейт — при падении деплоя не будет)
+        run: dotnet run -c Release --project tests/LabHub.Tests
+
+      - name: Style check (функции ≤ 3 параметров, ≤ 30 строк)
+        run: python3 tools/check_style.py
+
+      - name: Publish
+        run: dotnet publish src/LabHub.Web -c Release -o publish
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: publish

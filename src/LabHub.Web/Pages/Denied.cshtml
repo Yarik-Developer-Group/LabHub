@@ -1,0 +1,11 @@
+@page "/denied"
+@model DeniedModel
+@{
+    ViewData["Title"] = "Доступ запрещён";
+}
+
+<div class="error-page">
+    <h1>Доступ запрещён</h1>
+    <p>Вы вошли, но этот аккаунт не в списке преподавателей.</p>
+    <p><a href="/">Вернуться к курсам</a></p>
+</div>

@@ -1,0 +1,60 @@
+@page "/c/{**path}"
+@model NodeModel
+@{
+    ViewData["Title"] = Model.Node!.Title;
+}
+
+<nav class="breadcrumbs">
+    <a href="/">Курсы</a>
+    @foreach (var (path, title) in Model.Breadcrumbs)
+    {
+        <span class="sep">/</span>
+        <a href="/c/@path">@title</a>
+    }
+</nav>
+
+<article>
+    <h1>@Model.Node!.Title</h1>
+
+    @if (Model.Node.HasBody)
+    {
+        <div class="content-body">@Html.Raw(Model.Node.HtmlBody)</div>
+    }
+
+    @if (Model.PlainChildren.Count > 0)
+    {
+        <section class="children">
+            <ul class="child-list">
+                @foreach (var child in Model.PlainChildren)
+                {
+                    <li>
+                        <a href="/c/@child.Path">@child.Title</a>
+                        @if (child.Summary is not null)
+                        {
+                            <p class="child-summary">@child.Summary</p>
+                        }
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+
+    @foreach (var group in Model.TrackGroups)
+    {
+        <section class="track-group">
+            <h2 class="track-title">@group.Key</h2>
+            <ul class="child-list">
+                @foreach (var child in group)
+                {
+                    <li>
+                        <a href="/c/@child.Path">@child.Title</a>
+                        @if (child.Summary is not null)
+                        {
+                            <p class="child-summary">@child.Summary</p>
+                        }
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+</article>

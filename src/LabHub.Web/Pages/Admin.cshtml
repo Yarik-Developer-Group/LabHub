@@ -1,0 +1,36 @@
+@page "/admin"
+@model AdminModel
+@{
+    ViewData["Title"] = "Админка";
+}
+
+<h1>Админка</h1>
+
+<p class="admin-user">Вы вошли как <strong>@Model.UserEmail</strong></p>
+
+@if (Model.Message is not null)
+{
+    <p class="admin-message">@Model.Message</p>
+}
+
+<dl class="admin-stats">
+    <dt>Контент загружен</dt>
+    <dd>@(Model.Snapshot.LoadedAtUtc == default ? "нет" : Model.Snapshot.LoadedAtUtc.ToString("u"))</dd>
+    <dt>Курсов (корневых разделов)</dt>
+    <dd>@Model.Snapshot.Roots.Count</dd>
+    <dt>Всего страниц</dt>
+    <dd>@Model.Snapshot.Index.Count</dd>
+    <dt>Пропущено битых файлов</dt>
+    <dd>@Model.Snapshot.WarningCount</dd>
+    <dt>Последняя ошибка обновления</dt>
+    <dd>@(Model.LastError ?? "нет")</dd>
+</dl>
+
+<div class="admin-actions">
+    <form method="post" asp-page-handler="Reload">
+        <button type="submit">Перезагрузить контент</button>
+    </form>
+    <form method="post" asp-page-handler="Logout">
+        <button type="submit" class="secondary">Выйти</button>
+    </form>
+</div>

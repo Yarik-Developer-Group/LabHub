@@ -1,0 +1,28 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Курсы";
+}
+
+<h1>Курсы</h1>
+
+@if (Model.Roots.Count == 0)
+{
+    <p class="empty-state">Контент пока не загружен — загляните чуть позже.</p>
+}
+else
+{
+    <div class="cards">
+        @foreach (var course in Model.Roots)
+        {
+            <a class="card" href="/c/@course.Path">
+                <h2>@course.Title</h2>
+                @if (course.Summary is not null)
+                {
+                    <p>@course.Summary</p>
+                }
+                <span class="card-meta">Разделов: @course.Children.Count</span>
+            </a>
+        }
+    </div>
+}
