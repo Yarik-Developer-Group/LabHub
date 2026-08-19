@@ -1,28 +1,25 @@
 @page
 @model IndexModel
 @{
-    ViewData["Title"] = "Курсы";
+    ViewData["Title"] = "Главная";
 }
 
-<h1>Курсы</h1>
-
-@if (Model.Roots.Count == 0)
+@if (!Model.HasContent)
 {
     <p class="empty-state">Контент пока не загружен — загляните чуть позже.</p>
 }
 else
 {
-    <div class="cards">
-        @foreach (var course in Model.Roots)
-        {
-            <a class="card" href="/c/@course.Path">
-                <h2>@course.Title</h2>
-                @if (course.Summary is not null)
-                {
-                    <p>@course.Summary</p>
-                }
-                <span class="card-meta">Разделов: @course.Children.Count</span>
-            </a>
-        }
+    <div class="hero">
+        <h1>Лабораторные и материалы курсов</h1>
+        <p class="hero-lead">
+            Все курсы, статьи и лабораторные — в меню слева.
+            Выберите курс, раскройте раздел и работайте по порядку:
+            у каждой лабы есть цель, ход работы и контрольные вопросы.
+        </p>
+        <p class="hero-hint">
+            В некоторых лабах есть экстра-задания по трекам — выбирайте тот,
+            что ближе к вашему будущему направлению.
+        </p>
     </div>
 }

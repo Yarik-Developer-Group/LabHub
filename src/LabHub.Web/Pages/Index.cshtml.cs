@@ -9,7 +9,7 @@ public class IndexModel : PageModel
 
     public IndexModel(ContentStore store) => _store = store;
 
-    public IReadOnlyList<ContentNode> Roots { get; private set; } = [];
+    public bool HasContent { get; private set; }
 
-    public void OnGet() => Roots = _store.Current.Roots;
+    public void OnGet() => HasContent = _store.Current.Roots.Count > 0;
 }

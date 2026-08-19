@@ -13,14 +13,14 @@
 </head>
 <body>
     <header class="site-header">
-        <div class="container header-inner">
+        <div class="header-inner">
             <a class="brand" href="/">Lab<span>Hub</span></a>
             <nav class="site-nav">
-                <a href="/">Курсы</a>
+                <a href="/">Материалы</a>
             </nav>
         </div>
     </header>
-    <div class="container layout">
+    <div class="layout">
         @if (roots.Count > 0)
         {
             <aside class="sidebar">
@@ -35,11 +35,13 @@
             </aside>
         }
         <main class="page-main">
-            @RenderBody()
+            <div class="content-wrap">
+                @RenderBody()
+            </div>
         </main>
     </div>
     <footer class="site-footer">
-        <div class="container">LabHub — лабораторные и материалы курсов</div>
+        <div class="footer-inner">LabHub — лабораторные и материалы курсов</div>
     </footer>
 </body>
 </html>

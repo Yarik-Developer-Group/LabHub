@@ -30,14 +30,14 @@ public class IntegrationTests : IClassFixture<LabHubAppFixture>
     }
 
     [Fact]
-    public async Task HomePageListsCourses()
+    public async Task HomePageShowsWelcomeWithoutCourseCards()
     {
         var response = await Client.GetAsync("/");
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("Сети", html);
-        Assert.Contains("Курс о сетях", html);
+        Assert.Contains("в меню слева", html);
+        Assert.DoesNotContain("Курс о сетях", html);
     }
 
     [Fact]
