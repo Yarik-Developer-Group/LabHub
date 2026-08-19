@@ -36,7 +36,7 @@ public class IntegrationTests : IClassFixture<LabHubAppFixture>
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("в меню слева", html);
+        Assert.Contains("в меню зліва", html);
         Assert.DoesNotContain("Курс о сетях", html);
     }
 
@@ -66,7 +66,7 @@ public class IntegrationTests : IClassFixture<LabHubAppFixture>
         var response = await Client.GetAsync("/c/no/such/lab");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Contains("не найдена", await response.Content.ReadAsStringAsync());
+        Assert.Contains("не знайдено", await response.Content.ReadAsStringAsync());
     }
 
     [Fact]
