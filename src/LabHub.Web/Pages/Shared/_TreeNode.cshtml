@@ -1,0 +1,24 @@
+@model TreeNodeView
+
+@if (Model.Node.Children.Count == 0)
+{
+    <li class="tree-leaf">
+        <a class="tree-link @(Model.IsActive ? "active" : "")" href="/c/@Model.Node.Path">@Model.Node.Title</a>
+    </li>
+}
+else
+{
+    <li class="tree-branch">
+        <details open="@Model.IsOnCurrentPath">
+            <summary>
+                <a class="tree-link @(Model.IsActive ? "active" : "")" href="/c/@Model.Node.Path">@Model.Node.Title</a>
+            </summary>
+            <ul class="tree-list">
+                @foreach (var child in Model.Node.Children)
+                {
+                    <partial name="_TreeNode" model="new TreeNodeView(child, Model.CurrentPath)" />
+                }
+            </ul>
+        </details>
+    </li>
+}

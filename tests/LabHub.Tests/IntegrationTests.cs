@@ -161,6 +161,26 @@ public class IntegrationTests : IClassFixture<LabHubAppFixture>
     }
 
     [Fact]
+    public async Task SidebarTreeShowsStructureWithActiveNode()
+    {
+        var html = await Client.GetStringAsync("/c/nets/labs/lab-a");
+
+        Assert.Contains("class=\"tree\"", html);
+        Assert.Contains("tree-link active", html);
+        Assert.Contains("href=\"/c/nets/labs/lab-a\"", html);
+        Assert.Contains("<details open", html);
+    }
+
+    [Fact]
+    public async Task SidebarTreeIsPresentOnHomePage()
+    {
+        var html = await Client.GetStringAsync("/");
+
+        Assert.Contains("class=\"tree\"", html);
+        Assert.Contains(">Сети</a>", html);
+    }
+
+    [Fact]
     public async Task LoginReportsAuthNotConfigured()
     {
         var response = await Client.GetAsync("/login");

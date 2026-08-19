@@ -22,6 +22,7 @@ public class NodeModel : PageModel
     {
         Node = _store.Find(path);
         if (Node is null) return NotFound();
+        ViewData["CurrentPath"] = Node.Path;
         Breadcrumbs = BuildBreadcrumbs(Node.Path);
         PlainChildren = Node.Children.Where(c => c.Track is null).ToArray();
         TrackGroups = Node.Children

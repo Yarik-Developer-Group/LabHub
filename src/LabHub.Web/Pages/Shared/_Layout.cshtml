@@ -1,3 +1,8 @@
+@inject LabHub.Web.Core.ContentStore Store
+@{
+    var currentPath = ViewData["CurrentPath"] as string ?? "";
+    var roots = Store.Current.Roots;
+}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -15,9 +20,24 @@
             </nav>
         </div>
     </header>
-    <main class="container">
-        @RenderBody()
-    </main>
+    <div class="container layout">
+        @if (roots.Count > 0)
+        {
+            <aside class="sidebar">
+                <nav class="tree" aria-label="Материалы">
+                    <ul class="tree-list tree-root">
+                        @foreach (var root in roots)
+                        {
+                            <partial name="_TreeNode" model="new TreeNodeView(root, currentPath)" />
+                        }
+                    </ul>
+                </nav>
+            </aside>
+        }
+        <main class="page-main">
+            @RenderBody()
+        </main>
+    </div>
     <footer class="site-footer">
         <div class="container">LabHub — лабораторные и материалы курсов</div>
     </footer>
