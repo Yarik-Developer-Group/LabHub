@@ -10,8 +10,18 @@ summary: Додаток з ПР1 вчиться зберігати дані у �
 і структуру таблиці з [ПР2](/c/databases/practice/pr-02-table-and-queries):
 навчити додаток працювати з різними сховищами даних.
 
-Перед виконанням перегляньте тему
-[«Способи зберігання даних у додатку»](/c/databases/theory/data-storage).
+## Перед виконанням
+
+Теми, які варто розібрати:
+
+- Патерн **Repository** та абстракція над сховищем: чому додаток не повинен
+  знати, де саме лежать дані. Що шукати: *repository pattern C#*.
+- Серіалізація у **JSON**: `System.Text.Json`. Що шукати: *System.Text.Json serialize*.
+- **Redis** як key-value сховище: встановлення на Windows, базові команди.
+  Що шукати: *Redis on Windows*, *StackExchange.Redis*.
+- Бінарна серіалізація **Protobuf**. Що шукати: *protobuf-net C#*.
+- Доступ до **SQL Server** з C#: `Microsoft.Data.SqlClient` і параметризовані
+  запити. Що шукати: *SqlCommand parameters, SQL injection*.
 
 ## Завдання
 

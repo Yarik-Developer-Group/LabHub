@@ -9,8 +9,20 @@ summary: Перша таблиця у MS SQL Server: типи, обмеженн�
 Спроєктувати таблицю для сутності вашого варіанта і навчитися діставати
 з неї дані різними способами.
 
-Перед виконанням перегляньте тему
-[«Таблиці, типи даних та обмеження»](/c/databases/theory/tables-and-constraints).
+## Перед виконанням
+
+Теми, які варто розібрати:
+
+- Типи даних MS SQL Server: числові (`int`, `bigint`, `decimal`), рядкові
+  (`varchar` vs `nvarchar`), дати й час (`date`, `datetime2`), `bit`,
+  `uniqueidentifier`. Що шукати: *SQL Server data types best practices*.
+- Обмеження цілісності: `NULL`/`NOT NULL`, `DEFAULT`, `PRIMARY KEY`, `UNIQUE`,
+  `CHECK`. Що шукати: *SQL Server constraints*.
+- Обчислювані колонки. Що шукати: *computed columns SQL Server, persisted*.
+- Базові оператори: `SELECT`, `INSERT`, `UPDATE`, `DELETE`, а також `TOP`,
+  `OFFSET/FETCH`, `ORDER BY`, `LIKE`, `IN`, `IS NULL`, `BETWEEN`,
+  логічні `AND`/`OR`/`NOT`.
+- Цикл `WHILE` у T-SQL — для генерації тестових даних.
 
 ## Завдання
 
