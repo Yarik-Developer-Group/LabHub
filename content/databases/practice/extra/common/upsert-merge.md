@@ -1,5 +1,5 @@
 ---
-title: Е3. UPSERT / MERGE
+title: С3. UPSERT / MERGE
 order: 3
 summary: «Встав або онови» одним оператором — без if-ів у коді.
 ---
