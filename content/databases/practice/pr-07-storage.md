@@ -15,14 +15,16 @@ summary: Додаток з ПР1 вчиться зберігати дані у �
 Теми, які варто розібрати:
 
 - Патерн **Repository** та абстракція над сховищем: чому додаток не повинен
-  знати, де саме лежать дані. Що шукати: *repository pattern python*.
-- Серіалізація у **JSON**: модуль `json` (або `pydantic`).
-  Що шукати: *python json serialize object*.
-- **Redis** як key-value сховище: встановлення на Windows, базові команди.
-  Що шукати: *Redis on Windows*, *redis-py*.
-- Бінарна серіалізація **Protobuf**. Що шукати: *protobuf python tutorial*.
-- Доступ до **SQL Server** з Python: `pyodbc` і параметризовані запити.
-  Що шукати: *pyodbc parameterized query, SQL injection*.
+  знати, де саме лежать дані. Що шукати: *repository pattern*.
+- Серіалізація у **JSON** засобами вашої мови.
+  Що шукати: *json serialization* + назва вашої мови.
+- **Redis** як key-value сховище: встановлення на Windows, базові команди,
+  клієнтська бібліотека для вашої мови. Що шукати: *Redis on Windows*,
+  *redis client* + назва мови.
+- Бінарна серіалізація **Protobuf**. Що шукати: *protobuf tutorial* + назва мови.
+- Доступ до **SQL Server** з вашої мови: драйвер/бібліотека і обов'язково
+  **параметризовані запити**. Що шукати: *sql server driver* + назва мови,
+  *parameterized query, SQL injection*.
 
 ## Завдання
 
