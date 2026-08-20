@@ -34,10 +34,11 @@ summary: Абстракція над файловим сховищем з дво
 - Object storage vs файлова система: у чому концептуальна різниця.
   Що шукати: *object storage vs file storage*.
 - Azure Blob Storage: storage account, контейнер, blob.
-  Що шукати: *Azure Blob Storage quickstart .NET*.
-- Завантаження великих файлів частинами: block blobs, `StageBlock` /
-  `CommitBlockList`. Що шукати: *Azure block blob upload in chunks*.
-- Робота з потоками у C#: `Stream`, буферизація.
+  Що шукати: *Azure Blob Storage quickstart Python*, *azure-storage-blob*.
+- Завантаження файлів частинами: block blobs, `stage_block` /
+  `commit_block_list`. Що шукати: *Azure block blob upload in chunks python*.
+- Читання файлів частинами (чанками) у Python, щоб не тягнути
+  весь файл у пам'ять. Що шукати: *python read file in chunks*.
 
 ## Завдання
 
@@ -55,7 +56,7 @@ summary: Абстракція над файловим сховищем з дво
 3. Зробіть **дві реалізації** цього інтерфейсу:
    - **файлова система** — для локальної розробки: файли у папці,
      сесія завантаження — тимчасова папка з частинами, `Complete` склеює їх;
-   - **Azure Blob Storage** — реальний бакет у хмарі (`Azure.Storage.Blobs`);
+   - **Azure Blob Storage** — реальний бакет у хмарі (пакет `azure-storage-blob`);
      для сесій використовуйте block blobs.
 4. Додайте **перемикач** між сховищами — за аналогією з перемиканням
    баз даних у [ПР7](/c/databases/practice/pr-07-storage).

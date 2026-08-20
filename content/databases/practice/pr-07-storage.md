@@ -15,13 +15,14 @@ summary: Додаток з ПР1 вчиться зберігати дані у �
 Теми, які варто розібрати:
 
 - Патерн **Repository** та абстракція над сховищем: чому додаток не повинен
-  знати, де саме лежать дані. Що шукати: *repository pattern C#*.
-- Серіалізація у **JSON**: `System.Text.Json`. Що шукати: *System.Text.Json serialize*.
+  знати, де саме лежать дані. Що шукати: *repository pattern python*.
+- Серіалізація у **JSON**: модуль `json` (або `pydantic`).
+  Що шукати: *python json serialize object*.
 - **Redis** як key-value сховище: встановлення на Windows, базові команди.
-  Що шукати: *Redis on Windows*, *StackExchange.Redis*.
-- Бінарна серіалізація **Protobuf**. Що шукати: *protobuf-net C#*.
-- Доступ до **SQL Server** з C#: `Microsoft.Data.SqlClient` і параметризовані
-  запити. Що шукати: *SqlCommand parameters, SQL injection*.
+  Що шукати: *Redis on Windows*, *redis-py*.
+- Бінарна серіалізація **Protobuf**. Що шукати: *protobuf python tutorial*.
+- Доступ до **SQL Server** з Python: `pyodbc` і параметризовані запити.
+  Що шукати: *pyodbc parameterized query, SQL injection*.
 
 ## Завдання
 
