@@ -7,7 +7,7 @@ summary: Що таке СУБД, які бувають провайдери, з 
 ## Презентація
 
 Основний матеріал вступної лекції — у презентації:
-[Вступ до баз даних (Google Slides)](https://docs.google.com/presentation/d/1KVTtGmWPTM9TqIzDbkTKTaxcFHkAnPHY57FFC7sQ81Q/edit).
+[«Тема 1. Вступ до баз даних» (PDF)](/assets/databases/theory/files/vstup-do-bd.pdf).
 
 Нижче — короткий конспект і корисні посилання.
 
@@ -23,7 +23,7 @@ summary: Що таке СУБД, які бувають провайдери, з 
 вона не призначена.
 
 Продуктивність бази впирається не туди, куди здається на перший погляд —
-про це окремі сторінки: [Архітектура ПК](/c/databases/theory/pc-architecture)
+про це окремі сторінки: [Архітектура ПК](/c/general/pc-architecture)
 та [Що із заліза важливо для БД](/c/databases/theory/hardware-for-db).
 
 ## Що встановити

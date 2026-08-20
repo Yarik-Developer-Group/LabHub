@@ -5,13 +5,26 @@ summary: Клонування репозиторію на свій комп'ют
 ---
 
 Покрокова інструкція на прикладі Visual Studio.
-## Кроки
 
-1. Відкрийте головну сторінку вашого репозиторію у браузері.
-2. Скопіюйте **тільки URL-адресу** репозиторію — без команди `git clone`.
-3. Запустіть Visual Studio і натисніть **Clone a repository**.
-4. Вставте URL у поле **Repository location** і вкажіть **локальну папку**,
-   куди клонувати.
+## 1. Відкрийте головну сторінку репозиторію
+
+![Головна сторінка репозиторію](img/vs-01-repo-page.png)
+
+## 2. Скопіюйте URL-адресу
+
+**Тільки URL** — без команди `git clone`.
+
+![Копіювання URL](img/vs-02-copy-url.png)
+
+## 3. У Visual Studio натисніть Clone a repository
+
+![Clone a repository у Visual Studio](img/vs-03-clone-menu.png)
+
+## 4. Вставте URL і вкажіть локальну папку
+
+URL — у поле **Repository location**, папку — у **Path**.
+
+![Налаштування клонування](img/vs-04-clone-settings.png)
 
 Репозиторій на вашому комп'ютері — час
 [зробити перший коміт](/c/general/first-commit-visual-studio).
