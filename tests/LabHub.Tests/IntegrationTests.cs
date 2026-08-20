@@ -181,6 +181,18 @@ public class IntegrationTests : IClassFixture<LabHubAppFixture>
     }
 
     [Fact]
+    public async Task KatexAssetsAreServedAndPagesIncludeThem()
+    {
+        var js = await Client.GetAsync("/lib/katex/katex.min.js");
+        var css = await Client.GetAsync("/lib/katex/katex.min.css");
+        var html = await Client.GetStringAsync("/");
+
+        Assert.Equal(HttpStatusCode.OK, js.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, css.StatusCode);
+        Assert.Contains("js/math.js", html);
+    }
+
+    [Fact]
     public async Task LoginReportsAuthNotConfigured()
     {
         var response = await Client.GetAsync("/login");

@@ -64,6 +64,24 @@ public class MarkdownRendererTests
     }
 
     [Fact]
+    public void InlineMathBecomesMathSpan()
+    {
+        var html = MarkdownRenderer.Render(@"Енергія: $E = mc^2$", "/assets");
+
+        Assert.Contains("class=\"math\"", html);
+        Assert.Contains("mc^2", html);
+    }
+
+    [Fact]
+    public void BlockMathWithFractionBecomesMathDiv()
+    {
+        var html = MarkdownRenderer.Render("$$\n\\frac{a}{b} + x^{10}\n$$", "/assets");
+
+        Assert.Contains("<div class=\"math\">", html);
+        Assert.Contains("\\frac{a}{b}", html);
+    }
+
+    [Fact]
     public void PipeTablesAreRendered()
     {
         var html = MarkdownRenderer.Render("| a | b |\n|---|---|\n| 1 | 2 |", "/assets");

@@ -9,6 +9,7 @@ public static class MarkdownRenderer
 {
     private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()
         .UseAdvancedExtensions()
+        .UseMathematics()
         .DisableHtml()
         .Build();
 

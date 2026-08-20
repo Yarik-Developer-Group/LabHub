@@ -11,6 +11,9 @@
     <title>@(ViewData["Title"] is string title ? $"{title} — LabHub" : "LabHub")</title>
     <meta name="description" content="LabHub — практичні роботи та матеріали курсів" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/katex/katex.min.css" asp-append-version="true" />
+    <script defer src="~/lib/katex/katex.min.js" asp-append-version="true"></script>
+    <script defer src="~/js/math.js" asp-append-version="true"></script>
 </head>
 <body>
     <header class="site-header">
