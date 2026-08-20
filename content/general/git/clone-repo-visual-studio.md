@@ -27,7 +27,7 @@ URL — у поле **Repository location**, папку — у **Path**.
 ![Налаштування клонування](img/vs-04-clone-settings.png)
 
 Репозиторій на вашому комп'ютері — час
-[зробити перший коміт](/c/general/first-commit-visual-studio).
+[зробити перший коміт](/c/general/git/first-commit-visual-studio).
 
 > Користуєтеся іншою IDE або консоллю? Ті самі кроки: скопіювати URL
 > і виконати `git clone <url>` у потрібній папці.

@@ -32,4 +32,4 @@ summary: Перші кроки у Bitbucket: воркспейс, проєкт, �
 [VisualStudio.gitignore](https://github.com/github/gitignore/blob/main/VisualStudio.gitignore).
 
 Репозиторій готовий — далі
-[завантажте його локально](/c/general/clone-repo-visual-studio).
+[завантажте його локально](/c/general/git/clone-repo-visual-studio).

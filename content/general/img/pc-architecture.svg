@@ -27,15 +27,15 @@
   <rect x="60" y="290" width="220" height="110" rx="10" class="box"/>
   <text x="170" y="318" class="t">Диск</text>
   <text x="170" y="340" class="s">HDD / SATA SSD / NVMe</text>
-  <text x="170" y="358" class="s">повільний, зате постійний:</text>
-  <text x="170" y="376" class="s">тут живуть дані вашої БД</text>
+  <text x="170" y="358" class="s">повільний, зате енергонезалежний:</text>
+  <text x="170" y="376" class="s">дані переживають вимкнення</text>
   <line x1="170" y1="244" x2="170" y2="290" class="wire"/>
 
   <rect x="330" y="290" width="200" height="110" rx="10" class="box"/>
   <text x="430" y="318" class="t">Мережева карта</text>
   <text x="430" y="340" class="s">1 Гбіт/с = 125 МБ/с на всіх</text>
-  <text x="430" y="358" class="s">через неї до сервера БД</text>
-  <text x="430" y="376" class="s">ходять усі клієнти</text>
+  <text x="430" y="358" class="s">через неї комп'ютер</text>
+  <text x="430" y="376" class="s">спілкується зі світом</text>
   <line x1="430" y1="244" x2="430" y2="290" class="wire"/>
 
   <rect x="580" y="290" width="220" height="110" rx="10" class="box"/>
