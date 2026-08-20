@@ -5,8 +5,6 @@ summary: Клонування репозиторію на свій комп'ют
 ---
 
 Покрокова інструкція на прикладі Visual Studio.
-Оригінал зі скріншотами: [Google Doc](https://docs.google.com/document/d/1h8msgdloIR0ZC4NK5mu5gS4cghApkQSuI9OmEOjsMeI/edit).
-
 ## Кроки
 
 1. Відкрийте головну сторінку вашого репозиторію у браузері.

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="440" viewBox="0 0 860 440" font-family="system-ui, sans-serif">
+  <style>
+    .box { fill: #ffffff; stroke: #1a5bb7; stroke-width: 2; rx: 10; }
+    .sub { fill: #dcebfb; stroke: #1a5bb7; stroke-width: 1; }
+    .t { fill: #24272f; font-size: 16px; font-weight: 600; text-anchor: middle; }
+    .s { fill: #545861; font-size: 12px; text-anchor: middle; }
+    .wire { stroke: #545861; stroke-width: 2; }
+  </style>
+  <rect x="20" y="196" width="820" height="48" rx="10" fill="#d8d5b9"/>
+  <text x="430" y="225" class="t">Материнська плата (шини даних)</text>
+
+  <rect x="60" y="40" width="220" height="120" rx="10" class="box"/>
+  <text x="170" y="68" class="t">Процесор (CPU)</text>
+  <text x="170" y="88" class="s">кілька потужних ядер, 3–5 ГГц</text>
+  <rect x="85" y="100" width="170" height="40" rx="6" class="sub"/>
+  <text x="170" y="118" class="s">кеші L1 / L2 / L3</text>
+  <text x="170" y="132" class="s">найшвидша пам'ять, але крихітна</text>
+  <line x1="170" y1="160" x2="170" y2="196" class="wire"/>
+
+  <rect x="560" y="40" width="240" height="120" rx="10" class="box"/>
+  <text x="680" y="68" class="t">Оперативна пам'ять (RAM)</text>
+  <text x="680" y="90" class="s">DDR3 → DDR4 → DDR5</text>
+  <text x="680" y="108" class="s">десятки ГБ/с, доступ ~100 нс</text>
+  <text x="680" y="126" class="s">все зникає при вимкненні</text>
+  <line x1="680" y1="160" x2="680" y2="196" class="wire"/>
+
+  <rect x="60" y="290" width="220" height="110" rx="10" class="box"/>
+  <text x="170" y="318" class="t">Диск</text>
+  <text x="170" y="340" class="s">HDD / SATA SSD / NVMe</text>
+  <text x="170" y="358" class="s">повільний, зате постійний:</text>
+  <text x="170" y="376" class="s">тут живуть дані вашої БД</text>
+  <line x1="170" y1="244" x2="170" y2="290" class="wire"/>
+
+  <rect x="330" y="290" width="200" height="110" rx="10" class="box"/>
+  <text x="430" y="318" class="t">Мережева карта</text>
+  <text x="430" y="340" class="s">1 Гбіт/с = 125 МБ/с на всіх</text>
+  <text x="430" y="358" class="s">через неї до сервера БД</text>
+  <text x="430" y="376" class="s">ходять усі клієнти</text>
+  <line x1="430" y1="244" x2="430" y2="290" class="wire"/>
+
+  <rect x="580" y="290" width="220" height="110" rx="10" class="box"/>
+  <text x="690" y="318" class="t">Відеокарта (GPU)</text>
+  <text x="690" y="340" class="s">тисячі простих ядер</text>
+  <text x="690" y="358" class="s">матриці, 3D, нейромережі —</text>
+  <text x="690" y="376" class="s">але не бази даних</text>
+  <line x1="690" y1="244" x2="690" y2="290" class="wire"/>
+</svg>

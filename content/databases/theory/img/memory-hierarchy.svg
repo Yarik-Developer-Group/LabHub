@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="360" viewBox="0 0 860 360" font-family="system-ui, sans-serif">
+  <style>
+    .lbl { fill: #24272f; font-size: 15px; font-weight: 600; }
+    .val { fill: #545861; font-size: 13px; }
+    .bar { fill: #1a5bb7; rx: 6; }
+    .note { fill: #545861; font-size: 12px; font-style: italic; }
+  </style>
+  <text x="20" y="30" fill="#24272f" font-size="17" font-weight="700">Скільки чекати на дані (кожен щабель — приблизно у 100 разів довше)</text>
+
+  <text x="20" y="75" class="lbl">Кеш CPU</text>
+  <rect x="240" y="60" width="40" height="22" class="bar"/>
+  <text x="290" y="76" class="val">~1–10 нс</text>
+
+  <text x="20" y="125" class="lbl">RAM</text>
+  <rect x="240" y="110" width="110" height="22" class="bar"/>
+  <text x="360" y="126" class="val">~100 нс</text>
+
+  <text x="20" y="175" class="lbl">NVMe SSD</text>
+  <rect x="240" y="160" width="250" height="22" class="bar"/>
+  <text x="500" y="176" class="val">~100 000 нс (0,1 мс)</text>
+
+  <text x="20" y="225" class="lbl">Мережа (локальна)</text>
+  <rect x="240" y="210" width="330" height="22" class="bar"/>
+  <text x="580" y="226" class="val">~0,1–1 мс</text>
+
+  <text x="20" y="275" class="lbl">HDD</text>
+  <rect x="240" y="260" width="480" height="22" class="bar" fill="#003c91"/>
+  <text x="730" y="276" class="val">~5–10 мс</text>
+
+  <text x="20" y="330" class="note">Масштаб умовний: якби кеш був 1 мм, HDD був би кілометрами. База даних живе на нижніх щаблях —</text>
+  <text x="20" y="348" class="note">тому вона так відчайдушно кешує все у RAM і так любить швидкі диски.</text>
+</svg>

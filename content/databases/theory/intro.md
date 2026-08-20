@@ -23,28 +23,22 @@ summary: Що таке СУБД, які бувають провайдери, з 
 вона не призначена.
 
 Продуктивність бази впирається не туди, куди здається на перший погляд —
-про це окрема сторінка: [Компоненти ПК і що з них важливо для БД](/c/databases/theory/pc-components).
+про це окремі сторінки: [Архітектура ПК](/c/databases/theory/pc-architecture)
+та [Що із заліза важливо для БД](/c/databases/theory/hardware-for-db).
 
 ## Що встановити
 
-- **SSMS** (IDE для роботи з MS SQL):
-  [завантажити](https://aka.ms/ssms/21/release/vs_SSMS.exe)
-- **SQL Server Database Engine**:
-  [інструкція зі встановлення](https://learn.microsoft.com/en-us/ssms/install/install)
-- **АБО**, як альтернатива, **PostgreSQL**:
-  [завантажити для Windows](https://www.postgresql.org/download/windows/)
+Ви обираєте **одну** СУБД на весь семестр — встановлювати обидві не потрібно:
 
-## Інструменти розробника (для 2 курсу)
+**Варіант А — MS SQL Server:**
 
-Роботи здаються через pull request, тому знадобиться git і хмарний сервіс
-для коду:
+- [SQL Server Database Engine](https://learn.microsoft.com/en-us/ssms/install/install) — сам сервер;
+- [SSMS](https://aka.ms/ssms/21/release/vs_SSMS.exe) — IDE для роботи з ним.
 
-- **Git for Windows**: [завантажити](https://git-scm.com/download/win)
-- **Bitbucket** (сервіс для збереження вашого коду у хмарі):
-  [bitbucket.org](https://bitbucket.org/) — або, як альтернатива,
-  [GitHub](https://github.com/)
+**Варіант Б — PostgreSQL:**
 
-Покрокові інструкції — у розділі [«Загальне»](/c/general):
-[як створити воркспейс та репозиторій](/c/general/bitbucket-workspace-repo),
-[як завантажити репозиторій локально](/c/general/clone-repo-visual-studio),
-[як зробити перший коміт](/c/general/first-commit-visual-studio).
+- [Інсталятор для Windows](https://www.postgresql.org/download/windows/) —
+  сервер разом з pgAdmin (IDE) в одному пакеті.
+
+Інструменти розробника (git, Bitbucket/GitHub) та покрокові інструкції
+зі здачі робіт — у розділі [«Загальне»](/c/general).

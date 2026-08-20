@@ -5,8 +5,6 @@ summary: Перші кроки у Bitbucket: воркспейс, проєкт, �
 ---
 
 Покрокова інструкція на прикладі Bitbucket.
-Оригінал зі скріншотами: [Google Doc](https://docs.google.com/document/d/1pdx_bz-_XPKKESQxb6s7n8Tqyo36qGvLjYevYZzY6vs/edit).
-
 ## Кроки
 
 1. Створіть **воркспейс** — простір, у якому зберігатиметься ваш код.
