@@ -1,5 +1,5 @@
 ---
-title: Bulk insert з коду
+title: Е7. Bulk insert з коду
 order: 4
 summary: Сто тисяч рядків: построчно, батчами і bulk-механізмом. Відчуйте різницю.
 ---

@@ -1,5 +1,5 @@
 ---
-title: Пагінація: OFFSET проти keyset
+title: Е16. Пагінація: OFFSET проти keyset
 order: 7
 summary: Виміряти, чому глибокі сторінки через OFFSET — це біль, і як робити краще.
 ---
