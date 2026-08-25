@@ -293,6 +293,22 @@ a:hover {
     border-radius: var(--radius);
 }
 
+.content-body .lab-callout {
+    margin: 1.6rem 0;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid #b3261e;
+    border-left-width: 6px;
+    background: #fbeae9;
+    color: #8c1d16;
+    font-size: 1.15rem;
+    border-radius: var(--radius);
+}
+
+.content-body .lab-callout a {
+    color: #b3261e;
+    font-weight: 700;
+}
+
 .children,
 .track-group {
     margin-top: 1.5rem;

@@ -16,6 +16,15 @@ public class MarkdownRendererTests
     }
 
     [Fact]
+    public void CustomContainerRendersAsClassedDiv()
+    {
+        var html = MarkdownRenderer.Render(":::lab-callout\n**Тут можна виконувати ЛР4.**\n:::", "/assets");
+
+        Assert.Contains("class=\"lab-callout\"", html);
+        Assert.Contains("<strong>Тут можна виконувати ЛР4.</strong>", html);
+    }
+
+    [Fact]
     public void RawHtmlIsEscapedNotExecuted()
     {
         var html = MarkdownRenderer.Render("до <script>alert(1)</script> после", "/assets");
