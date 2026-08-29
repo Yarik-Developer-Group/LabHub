@@ -5,5 +5,4 @@ publish/
 .vs/
 .idea/
 nohup.out
-_to_delete/
 *-sync.zip
