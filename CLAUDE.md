@@ -93,7 +93,11 @@ git-команд перемещать `.git/index.lock`/`HEAD.lock` в `_to_dele
   сетей: ЛР1 TCP, ЛР2 UDP, ЛР3 HTTP, ЛР4 формати даних (XML/JSON/
   protobuf через файл), ЛР5 веб-API/REST (+отладка: curl/Postman/
   Bruno/Swagger/pytest), ЛР6 «від Цезаря до AES», ЛР7 «Підписи, ключі
-  та паролі» (крипто-лабы файлы lab-06-crypto/lab-07-applied-crypto).
+  та паролі» (крипто-лабы файлы lab-06-crypto/lab-07-applied-crypto),
+  ЛР8 телеметрія/observability (тяжёлая теория + лёгкая практика:
+  correlation ID руками + OpenTelemetry с консольным экспортером,
+  без Prometheus/Grafana/Jaeger — тяжело для 2 курса; опирается на
+  REST-сервис из ЛР5).
   В лекциях красные врезки :::lab-callout со ссылками на лабы)
   → HTTPS покрыт финалом криптолекции → gRPC
   «по-взрослому» (сразу с TLS) вместе
