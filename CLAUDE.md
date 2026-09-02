@@ -93,19 +93,27 @@ and in CI — regular nuget.org.
 
 ## Roadmap
 
-Long-term plan lives in `ROADMAP.md` (Ukrainian): stage 0 — strip dead
-server code (admin/OAuth/webhook) + feedback channel before the pilot;
-stage 1 — autumn 2026 pilot of the networks course (course frozen, keep a
-pilot journal, decide ЛР5 squeeze and other changes only after);
-stage 2 — template repo so other teachers can start their own course;
-stage 3 — .NET course (winter–spring 2027, opens with the HTTP-evolution
-lecture, brings back Docker/k8s/OTel); stage 4 — small static teaching
-tools. Update the roadmap when a stage completes.
+Long-term plan lives in `ROADMAP.md` (Ukrainian). Vector: an open library
+of practical course materials (metanit-like, but labs-first) + a platform
+any teacher can fork. IMPORTANT change (Sep 2026): the networks course was
+handed to another teacher at the last moment — no networks pilot; its
+content stays published as open material, error-fixes only. The autumn 2026
+pilot is instead **databases + Python for schoolkids** (both cohorts go
+through the site). Stages: 0 — strip dead server code + giscus
+comments/reactions under pages (material ratings; backup anonymous form for
+schoolkids); 1 — the two-course pilot with a journal; 2 — template repo for
+other teachers; 3 — multilingual content (`page.md` + `page.en.md`,
+language switcher, fallback) — biggest platform feature, do after the pilot
+proves the content structure stable; 4 — scouting методички (official
+department manuals) via a pandoc course→docx/PDF prototype with a title
+page; 5 — next-year candidates (.NET course, teaching tools). Update the
+roadmap when a stage completes.
 
 ## Open threads
 
-- Course «Комп'ютерні мережі» — COMPLETE and FROZEN for the pilot student
-  cohort (decision Aug 2026): measure how they cope, then adjust. Layout:
+- Course «Комп'ютерні мережі» — COMPLETE. Handed to another teacher for
+  autumn 2026, so no pilot of ours; stays published as open material,
+  error-fixes only. Layout:
   intro lecture (sockets, ARP + ND footnote), theory/extra popular-science
   lectures (CDN/torrents, datacenters/AI, wireless incl. roaming vs
   handover, eavesdropping, Tor), the single monolithic crypto lecture
