@@ -1,0 +1,56 @@
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Tests
+        run: dotnet test -c Release
+
+      - name: Style check
+        run: python3 tools/check_style.py
+
+      - name: Run site
+        run: |
+          dotnet run --project src/LabHub.Web -c Release &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:5204/healthz > /dev/null && break
+            sleep 2
+          done
+
+      - name: Export static site
+        run: python3 tools/export_static.py static-out
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: static-out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
