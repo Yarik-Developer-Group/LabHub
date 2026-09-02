@@ -1,124 +1,125 @@
-# LabHub — правила проекта
+# LabHub — project rules
 
-Сайт учебных материалов (ASP.NET Core 8, Razor Pages). Публичная часть — для
-студентов, админка — для преподавателя (Google OAuth + allowlist в
-`appsettings.json`). Хостинг-цель: Azure App Service F1 (бесплатный) + пинг
-`/healthz` от UptimeRobot. Владелец: Ярослав (ybalaba@teamworkcommerce.com),
-общение в чате — на русском.
+Educational materials site (ASP.NET Core 8, Razor Pages). Public side is for
+students. Hosting: **GitHub Pages** — the app is the renderer and local
+preview, `tools/export_static.py` turns it into a static tree, and
+`.github/workflows/pages.yml` publishes it on every push to `main`
+(repo must be named `<org>.github.io` so the site lives at the domain root
+and absolute links keep working). Admin panel, Google OAuth and the content
+webhook still exist in code but are NOT used in production anymore (Azure
+hosting was dropped deliberately); do not build on them. Owner: Yaroslav
+(ybalaba@teamworkcommerce.com), chat language — Russian.
 
-## Команды
+## Commands
 
 ```bash
-dotnet run --project src/LabHub.Web    # http://localhost:5204
-dotnet test                            # xunit, все тесты должны быть зелёными
-python3 tools/check_style.py           # гейт: функции ≤3 параметров, ≤30 строк
+dotnet run --project src/LabHub.Web        # http://localhost:5204
+dotnet test                                # xunit, all tests must stay green
+python3 tools/check_style.py               # gate: functions ≤3 params, ≤30 lines
+python3 tools/export_static.py static-out  # static export (site must be running)
 ```
 
-CI (`.github/workflows/deploy.yml`): тесты + стайл-чек, деплой в Azure только
-при изменениях в `src/`, `tests/`. Изменения только в `content/` деплой не
-запускают — их подхватывает webhook `/api/content/refresh` (HMAC-подпись,
-горячая подмена снимка контента без рестарта).
+CI (`.github/workflows/pages.yml`): tests + style gate → run the site →
+static export → deploy to GitHub Pages. Every push to `main` redeploys —
+content and code changes go through the same pipeline.
 
-## Железные правила кода
+## Iron code rules
 
-- **Никаких комментариев в коде** — вообще, нигде (C#, csproj, yml).
-- Функции: **максимум 3 параметра, максимум 30 строк** (проверяется скриптом).
-- Обработка ошибок обязательна: приложение не падает — битый контент
-  пропускается, недоступный GitHub не мешает старту, исключение = страница 500.
-- Безопасность: строгий CSP без inline-скриптов и без CDN (всё self-hosted,
-  включая KaTeX), raw HTML в markdown экранируется, path traversal на
-  `/assets` закрыт, webhook сверяется за постоянное время.
-- Тесты обязательны для новой функциональности (unit + интеграционные через
-  живое приложение на случайном порту, фикстура `LabHubAppFixture`).
+- **No comments in code** — none, anywhere (C#, csproj, yml).
+- Functions: **max 3 parameters, max 30 lines** (enforced by script).
+- Error handling is mandatory: the app never crashes — broken content is
+  skipped, unreachable GitHub does not block startup, exception = 500 page.
+- Security: strict CSP with no inline scripts and no CDNs (everything
+  self-hosted, including KaTeX), raw HTML in markdown is escaped, path
+  traversal on `/assets` is closed, webhook check runs in constant time.
+- Tests are mandatory for new functionality (unit + integration via a live
+  app on a random port, fixture `LabHubAppFixture`).
 
-## Архитектура (кратко)
+## Architecture (brief)
 
-Контент = markdown-дерево в `/content`, парсится в иммутабельный
-`ContentSnapshot` (весь HTML отрендерен заранее, Markdig + Mathematics),
-хранится в `ContentStore` (volatile-ссылка, atomic swap). Роутинг:
-`/c/{**path}`. Картинки/файлы — `/assets/{**path}` (allowlist расширений).
-Формулы: `$x^2$` и `$$\frac{a}{b}$$` → KaTeX (self-hosted, `wwwroot/lib/katex`).
+Content = a markdown tree in `/content`, parsed into an immutable
+`ContentSnapshot` (all HTML pre-rendered, Markdig + Mathematics), held in
+`ContentStore` (volatile reference, atomic swap). Routing: `/c/{**path}`.
+Images/files — `/assets/{**path}` (extension allowlist). Formulas: `$x^2$`
+and `$$\frac{a}{b}$$` → KaTeX (self-hosted, `wwwroot/lib/katex`). Red callout
+boxes in lectures: `:::lab-callout ... :::` custom container.
 
-## Правила контента
+## Content rules
 
-- Язык контента — **украинский**; UI-строки тоже. Язык программирования и
-  СУБД в заданиях **не навязываются** (рекомендации: MS SQL / PostgreSQL,
-  различия — врезками «у MS SQL — так, у PostgreSQL — так»).
-- Front-matter: `title`, `order` (сортировка, при равенстве — алфавит),
-  `summary`, `track` (группировка детей по трекам на странице родителя).
-- Папки `_имя` и `.имя` — скрытые (черновики), не публикуются.
-- Папки только с картинками (без .md) не становятся страницами.
-- Структура: `content/general` (order 0, НЕ знает о конкретных курсах),
-  `content/networks` (теория: залізо для мереж + вступна лекція),
-  `content/databases` (теория / практичні ПР1–ПР8 / екстра / vm-practical),
-  `content/python` (теми 1–8, домашки, контрольні).
-- Контрольні = только летучки (большой тест дропнут осознанно: «выбери
-  утверждение» устарел); ключи публикуются рядом (`answers-*.md`) —
-  философия «не завалить, а найти дыры».
-- Нумерация экстра-лаб — по веткам: С*, Р*, ДП*, ДА* (не сквозная!).
-- Тон: живой, но без мата; «доказ» в конце каждого задания экзамена.
+- Content language — **Ukrainian**; UI strings too. Programming language and
+  DBMS in assignments are **not imposed** (recommendations: MS SQL /
+  PostgreSQL, differences as "in MS SQL — like this, in PostgreSQL — like
+  this" asides).
+- Front-matter: `title`, `order` (sorting, ties break alphabetically),
+  `summary`, `track` (groups children into tracks on the parent page).
+- Folders named `_name` or `.name` are hidden (drafts), not published.
+- Folders containing only images (no .md) do not become pages.
+- Structure: `content/general` (order 0, knows nothing about specific
+  courses), `content/networks` (theory / labs ЛР1–ЛР8 / labs/extra /
+  vm-practicals / theory/extra), `content/databases` (theory / practice
+  ПР1–ПР8 / extra / vm-practical), `content/python` (topics 1–8, homework,
+  quizzes).
+- Quizzes = летучки only (the big multiple-choice test was dropped
+  deliberately: "pick the true statement" is outdated); answer keys are
+  published next to them (`answers-*.md`) — philosophy: "not to flunk, but
+  to find the gaps".
+- Extra-lab numbering in databases goes by branches: С*, Р*, ДП*, ДА*
+  (not sequential!). Networks extra labs have NO numbers at all; each starts
+  with a "коли виконувати" note naming the lab it builds on.
+- Tone: lively but no profanity; a "доказ" section at the end of every exam
+  task.
 
-## Синхронизация (важно для облачных сессий)
+## Sync (important for cloud sessions)
 
-Рабочая копия-истина — папка пользователя `C:\Common\GIT\PetProjects\LabHub`
-(git-репозиторий там же, коммиты от имени Ярослава). Облачная копия в
-`/home/claude/labhub` — рабочее пространство сессии; истории коммитов
-двух копий расходятся — это нормально, source of truth — устройство.
-На маунте устройства git не может удалять свои lock-файлы: перед/после
-git-команд перемещать `.git/index.lock`/`HEAD.lock` в `_to_delete/`
-(папка в `.gitignore`, пользователь чистит её сам). Транспортные zip
-(`*-sync.zip`) — тоже в `.gitignore`, в коммиты не включать.
+The source of truth is the user's working copy
+`C:\Common\GIT\PetProjects\LabHub` (git repo there, commits authored as
+Yaroslav). The cloud copy at `/home/claude/labhub` is the session workspace;
+the two commit histories diverge — that is normal, the device wins.
+On the device mount git cannot delete its own lock files: before/after git
+commands move `.git/index.lock`/`HEAD.lock` into `_to_delete/` (folder is in
+`.gitignore`, the user empties it himself). Transport zips (`*-sync.zip`)
+are gitignored too — never commit them. The path `.github/workflows/` is
+protected from remote writes: deliver workflow files to a temp name and move
+them into place with a device shell command.
 
-## NuGet и песочница
+## NuGet and the sandbox
 
-В облачной песочнице NuGet заблокирован: пакеты (Markdig, xunit и т.д.)
-восстанавливаются из локального фида `/home/claude/localfeed` (Markdig
-запакован из исходников, xunit — API-совместимый шим для прогона тестов
-через /tmp/xrunner). На машине пользователя и в CI — обычный nuget.org.
+In the cloud sandbox NuGet is blocked: packages (Markdig, xunit, …) restore
+from the local feed `/home/claude/localfeed` (Markdig packed from sources,
+xunit — an API-compatible shim run via /tmp/xrunner). On the user's machine
+and in CI — regular nuget.org.
 
-## Незакрытые хвосты
+## Open threads
 
-- Курс «Комп'ютерні мережі» — есть вступна лекція (включая сокеты)
-  и ЛР1–ЛР3 (TCP, UDP-відеострим, HTTP). Дальнейший порядок утверждён:
-  криптоблок (шифри, хеші, підписи, сертифікати — темы пришлёт
-  пользователь; лекция «Вступ до криптографії» уже есть — задачи/AES/
-  режимы, ключи/CSPRNG/.env, асимметрия с мат-основами и DH,
-  подписи, сертификаты/CA, AKE/PFS, финал TLS/SSH/E2EE, PAKE
-  «Висновок курсу» — и эпилог «як ламають» (брутфорс-миф, side-channel,
-  ошибки кода, downgrade/replay, квант/PQC, человеческий фактор)
-  ВНУТРИ той же лекции (crypto-intro.md — единый монолит, отдельного
-  crypto-breaking.md больше нет). Криптоблок ЗАВЕРШЁН полностью;
-  лабы строго по 2-3 завдання со степами, вектор+что читать, без
-  деталей, языконезависимо (Python в примітках). Нумерация лаб курса
-  сетей: ЛР1 TCP, ЛР2 UDP, ЛР3 HTTP, ЛР4 формати даних (XML/JSON/
-  protobuf через файл), ЛР5 веб-API/REST (+отладка: curl/Postman/
-  Bruno/Swagger/pytest), ЛР6 «від Цезаря до AES», ЛР7 «Підписи, ключі
-  та паролі» (крипто-лабы файлы lab-06-crypto/lab-07-applied-crypto),
-  ЛР8 «HTTPS на власні очі» — ФИНАЛЬНАЯ лаба курса (lab-08-https:
-  Wireshark на loopback ловит пароль в открытом HTTP → openssl
-  самоподписанный сертификат → TLS-обёртка сокет-сервера из ЛР3 →
-  ClientHello/ApplicationData в сниффере; теория — ссылками на
-  криптолекцию, новое понятие только сниффер; врезка на неё —
-  в конце финала протоколов криптолекции, перед PAKE).
-  Экстра-лабы сетей: labs/extra/ БЕЗ номеров, порядок не важен,
-  в начале каждой — «коли виконувати» (после какой ЛР). Пока там
-  одна: telemetry-logs.md «Логи та кореляція запитів» (один сервис,
-  параллельные запросы→перемешанные логи→correlation ID руками и
-  через logging; после ЛР5).
-  В лекциях красные врезки :::lab-callout со ссылками на лабы.
-  РЕШЕНИЯ ПО ОБЪЁМУ (авг 2026): курс ЗАМОРОЖЕН как есть — смотрим,
-  как даётся студентам, потом докручиваем. PAKE остаётся в лекции
-  как концепция для чтения (лабы по ней нет и не будет). Docker,
-  Docker Compose и Kubernetes из 2 курса УБРАНЫ полностью (старые
-  черновики этих лаб в репозиторий не попадали). gRPC + эволюция
-  HTTP/1.1 vs 2 vs 3 (QUIC — каллбек к UDP из ЛР2) отложены на
-  СЛЕДУЮЩИЙ год: это открывающая лекция курса про микросервисы,
-  без него не мотивируется. Инфраструктурный хвост 2 курса —
-  только SSH (есть, vm-practicals) → VPN (виртуальная сеть поверх
-  чужой: туннель/инкапсуляция/шифрование — повторение всего курса;
-  ещё не написана). Инфраструктурные лабы — аудиторные на ВМ,
-  крипто/HTTPS — домашние.
-- Раздел «Теорія» БД пополняется; git-гайды в «Загальне» ждут скриншоты
-  из экспорта Google Docs (пользователь кладёт экспорт в корень папки).
-- Секрет webhook, Google OAuth и GitHub-репозиторий контента настраиваются
-  при деплое (см. README).
+- Course «Комп'ютерні мережі» — COMPLETE and FROZEN for the pilot student
+  cohort (decision Aug 2026): measure how they cope, then adjust. Layout:
+  intro lecture (sockets, ARP + ND footnote), theory/extra popular-science
+  lectures (CDN/torrents, datacenters/AI, wireless incl. roaming vs
+  handover, eavesdropping, Tor), the single monolithic crypto lecture
+  `crypto-intro.md` (bricks: hash+salt, AES/modes/keys/CSPRNG, MAC,
+  asymmetry with RSA-on-small-numbers and DH, signatures; assemblies:
+  certificates/CA/chain of trust, AKE/PFS, finale TLS/SSH/E2EE, PAKE as
+  read-only concept, epilogue "how crypto really breaks" merged inside).
+  Labs (2–3 tasks each, language-agnostic body, Python hints in примітки,
+  pass/fail — no extra credit ever): ЛР1 TCP, ЛР2 UDP video stream,
+  ЛР3 HTTP by hand, ЛР4 data formats (XML/JSON/protobuf via file),
+  ЛР5 web-API/REST (+debugging: curl/Postman/Bruno/Swagger/pytest; 5 tasks —
+  known deviation, candidate to squeeze after the pilot), ЛР6 «Від Цезаря
+  до AES», ЛР7 «Підписи, ключі та паролі», ЛР8 «HTTPS на власні очі» —
+  the FINAL lab (Wireshark on loopback catches a plaintext password →
+  openssl self-signed cert → TLS-wrap the ЛР3 socket server →
+  ClientHello/Application Data in the sniffer; theory is links back into
+  the crypto lecture). Extra labs live in `labs/extra` without numbers;
+  currently one: telemetry-logs.md (one service, interleaved parallel logs →
+  correlation ID by hand, then via the logging library; do after ЛР5).
+  Lectures carry red `:::lab-callout` boxes linking to labs.
+- CUT from the 2nd-year course (Aug 2026): Docker, Docker Compose,
+  Kubernetes (old drafts never entered the repo), the VPN lab, and
+  gRPC + HTTP/1.1 vs 2 vs 3 / QUIC — the latter is deferred to NEXT year's
+  course as its opening lecture before microservices (QUIC is a callback to
+  UDP from ЛР2). Infrastructure tail of year 2 is only the classroom VM
+  practical (SSH keys/isolation/tunneling, `vm-practicals/`).
+- Databases «Теорія» section keeps growing; git guides in «Загальне» wait
+  for screenshots from a Google Docs export (user drops the export into the
+  repo root).
+- Student feedback via giscus and a search page — nice-to-have, not started.

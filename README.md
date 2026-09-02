@@ -1,145 +1,93 @@
 # LabHub
 
-Сайт лабораторных и учебных материалов: ASP.NET Core 8 + Markdown-контент в git.
-Публичная часть открыта всем, админка — по Google-входу для преподавателей из allowlist.
-Рассчитан на бесплатный Azure App Service F1: контент живёт в памяти, обновляется
-из GitHub **без рестарта** приложения.
+Сайт лабораторних робіт і навчальних матеріалів: ASP.NET Core 8 +
+Markdown-контент у git. Хостинг — **GitHub Pages**: застосунок рендерить
+контент, а на сайт викладається готова статика. Пуш у `main` → GitHub Actions
+збирає й публікує сайт за кілька хвилин. Жодних серверів, баз даних і оплати.
 
-## Архитектура в трёх абзацах
+## Архітектура у трьох абзацах
 
-Контент — папка `content/` в этом же репозитории: дерево «курс → раздел → лаба»
-любой вложенности, каждая страница — markdown с front-matter (`title`, `order`,
-`summary`, `track`). Картинки лежат рядом с лабой и раздаются через `/assets/…`
-с проверкой пути и allowlist-ом расширений. Base данных нет — и не нужна:
-версионирование, история и бэкап контента бесплатно даёт git.
+Контент — папка `content/` у цьому ж репозиторії: дерево «курс → розділ →
+лаба» будь-якої вкладеності, кожна сторінка — markdown із front-matter
+(`title`, `order`, `summary`, `track`). Картинки лежать поруч із лабою
+і роздаються через `/assets/…` із перевіркою шляху та allowlist-ом розширень.
+Бази даних немає — і не треба: версіонування, історію та бекап контенту
+безкоштовно дає git.
 
-При старте приложение читает `content/`, рендерит markdown (Markdig, сырой HTML
-экранируется) и держит всё в иммутабельном снимке в памяти — страницы отдаются
-за миллисекунды. Обновление: GitHub-webhook дёргает `POST /api/content/refresh`
-с HMAC-подписью → приложение скачивает свежий tarball контента → собирает новый
-снимок → атомарно подменяет старый. Ни рестарта, ни простоя. Подстраховка —
-фоновая сверка раз в `RefreshMinutes` минут.
+Застосунок читає `content/`, рендерить markdown (Markdig + формули KaTeX,
+сирий HTML екранується) і тримає все в іммутабельному знімку в пам'яті.
+Локально це звичайний сайт для попереднього перегляду; для публікації
+`tools/export_static.py` обходить працюючий сайт і складає статичне дерево —
+кожна сторінка стає папкою з `index.html`, ассети й KaTeX копіюються поруч,
+сторінка помилки стає `404.html`.
 
-Безопасность: Google OAuth на встроенном OAuth-хендлере (пакетов не нужно),
-allowlist преподавателей в конфиге, строгий CSP без inline-скриптов, security
-headers на каждом ответе, антифорджери на формах, проверка подписи webhook за
-постоянное время, защита от path traversal. Любая ошибка — аккуратная страница
-или 5xx, приложение не падает: битый md-файл пропускается, недоступный GitHub
-не мешает старту с локальной копией.
+Деплой описано в `.github/workflows/pages.yml`: тести → стайл-гейт → запуск
+сайту → експорт статики → публікація на GitHub Pages. Правити можна будь-що —
+контент чи код — процес один: закомітив, запушив, за пару хвилин воно на сайті.
 
-## Локальный запуск
+## Локальний запуск
 
 ```bash
 dotnet run --project src/LabHub.Web        # http://localhost:5204
-dotnet test                                # xunit, 77 тестов
-python3 tools/check_style.py               # правила: ≤3 параметров, ≤30 строк
+dotnet test                                # xunit, усі тести мають бути зеленими
+python3 tools/check_style.py               # гейт: функції ≤3 параметрів, ≤30 рядків
+python3 tools/export_static.py static-out  # експорт статики (потрібен запущений сайт)
 ```
 
-Контент правится в `content/`, после рестарта (или кнопки «Перезагрузить
-контент» в `/admin`) изменения видны.
+Контент правиться у `content/`, після рестарту застосунку зміни видно.
 
-## Структура контента
+## Структура контенту
 
 ```
 content/
   networks/                 курс
-    index.md                титул курса (title, order, summary + текст)
-    articles/               раздел
+    index.md                титул курсу (title, order, summary + текст)
+    theory/                 розділ
       index.md
-      osi-model.md          статья (leaf-файл)
+      crypto-intro.md       лекція (leaf-файл)
     labs/
       index.md
-      lab-01-wireshark/     лаба с картинками
+      lab-01-tcp.md
+      extra/                екстра-лаби без нумерації
         index.md
-        img/topology.svg    в md: ![схема](img/topology.svg)
-  databases/
-    labs/lab-02-sql/extra/  экстра-задания по трекам
-      developer.md          front-matter: track: Разработчик
-      dba.md                track: Администратор БД
+        telemetry-logs.md
 ```
 
 Front-matter:
 
 ```markdown
 ---
-title: Лаба 2. SQL
+title: ЛР2. UDP
 order: 2
-summary: Короткое описание для списка.
-track: Разработчик        # только для экстра-заданий, группирует по трекам
+summary: Короткий опис для списку.
+track: Розробник          # лише для екстра-завдань, групує за треками
 ---
 ```
 
-Папки с `_` или `.` в начале имени игнорируются (черновики).
+Папки з `_` чи `.` на початку імені ігноруються (чернетки). Папки лише
+з картинками (без .md) сторінками не стають.
 
-## Деплой на Azure (тариф F1, $0/мес)
+## Публікація на GitHub Pages
 
-1. Создайте Web App: Linux, .NET 8, план **F1 (Free)**. Имя = адрес
-   `<имя>.azurewebsites.net`.
-2. Скачайте publish profile (кнопка *Get publish profile* в Overview).
-3. В GitHub-репозитории: *Settings → Secrets and variables → Actions*:
-   - secret `AZURE_WEBAPP_PUBLISH_PROFILE` — содержимое publish profile;
-   - variable `AZURE_WEBAPP_NAME` — имя Web App.
-4. Пуш в `main` → workflow прогоняет тесты и деплоит.
+1. Репозиторій має називатися `<організація>.github.io` — тоді сайт живе
+   в корені `https://<організація>.github.io` і всі внутрішні посилання
+   працюють без переписування.
+2. У репозиторії: *Settings → Pages → Build and deployment → Source:
+   **GitHub Actions***.
+3. Пуш у `main`. Все інше зробить `pages.yml`.
 
-Workflow настроен так, что правки только в `content/` **не** запускают деплой —
-их доставляет webhook (ниже).
+## Тести
 
-### App Settings (Configuration → Application settings)
+xunit, запуск — `dotnet test`. Юніт-тести покривають парсер front-matter,
+рендер markdown (включно з екрануванням HTML, вичищенням `javascript:`
+і врізками `:::lab-callout`), allowlist розширень ассетів, захист від path
+traversal і завантажувач дерева контенту. Інтеграційні — через class fixture
+піднімають справжній застосунок на локальному порту і ганяють його звичайним
+HttpClient: сторінки, 404, security headers.
 
-| Ключ | Значение |
-|---|---|
-| `LabHub__WebhookSecret` | случайная строка 32+ символов (`openssl rand -hex 32`) |
-| `LabHub__GitHub__Repo` | `владелец/репозиторий` |
-| `LabHub__GitHub__Branch` | `main` (по умолчанию) |
-| `LabHub__GitHub__Token` | PAT с правом чтения (опционально, для приватного репо и щедрого rate-limit) |
-| `Authentication__Google__ClientId` | из Google Cloud Console |
-| `Authentication__Google__ClientSecret` | оттуда же |
+## Куди рости
 
-Секреты живут только здесь (и в user-secrets локально) — в git им не место.
-
-### Google OAuth
-
-1. [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services →
-   Credentials → Create OAuth client ID (Web application).
-2. Authorized redirect URI: `https://<имя>.azurewebsites.net/signin-google`.
-3. ClientId/ClientSecret → в App Settings.
-4. Свой email — в `LabHub:Teachers` в `appsettings.json` (это не секрет).
-
-Локально: `dotnet user-secrets set "Authentication:Google:ClientId" "..."`
-(в папке `src/LabHub.Web`, потребуется `dotnet user-secrets init`).
-
-### Webhook горячего обновления контента
-
-GitHub-репозиторий → Settings → Webhooks → Add webhook:
-
-- Payload URL: `https://<имя>.azurewebsites.net/api/content/refresh`
-- Content type: `application/json`
-- Secret: то же значение, что в `LabHub__WebhookSecret`
-- Events: *Just the push event*
-
-Коммит в `content/` → лаба на сайте через ~10 секунд, без рестарта.
-
-### Пинг против засыпания F1
-
-F1 останавливает приложение после ~20 минут без запросов. Заведите бесплатный
-монитор [UptimeRobot](https://uptimerobot.com) на
-`https://<имя>.azurewebsites.net/healthz` с интервалом 5 минут — это и
-keep-alive, и алерт «сайт упал». Редкие холодные старты при обслуживании
-платформы всё равно возможны — это принятый компромисс тарифа за $0.
-
-## Тесты
-
-xunit, запуск — `dotnet test` (или Test Explorer в Visual Studio). Юнит-тесты
-покрывают парсер front-matter, рендер markdown (включая экранирование HTML и
-вычистку `javascript:`), HMAC-подпись webhook, allowlist преподавателей, защиту
-от path traversal и загрузчик дерева контента. Интеграционные — через class
-fixture поднимают настоящее приложение на локальном порту и гоняют его обычным
-HttpClient: страницы, 404, security headers, webhook (включая горячую подмену
-контента без рестарта) и редирект админки на вход.
-
-## Куда расти
-
-Отзывы студентов — [giscus](https://giscus.app) (комментарии на GitHub
-Discussions, ноль инфраструктуры). Поиск — индекс по снимку уже в памяти,
-осталась только страница. Переезд с F1 куда угодно — приложение самодостаточно,
-Dockerfile добавляется тривиально.
+Відгуки студентів — [giscus](https://giscus.app) (коментарі на GitHub
+Discussions, нуль інфраструктури). Пошук — індекс по знімку вже в пам'яті,
+лишилась тільки сторінка. Власний домен — одна CNAME-запис і поле *Custom
+domain* у налаштуваннях Pages.
