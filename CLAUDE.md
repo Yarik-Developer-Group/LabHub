@@ -91,6 +91,17 @@ from the local feed `/home/claude/localfeed` (Markdig packed from sources,
 xunit — an API-compatible shim run via /tmp/xrunner). On the user's machine
 and in CI — regular nuget.org.
 
+## Roadmap
+
+Long-term plan lives in `ROADMAP.md` (Ukrainian): stage 0 — strip dead
+server code (admin/OAuth/webhook) + feedback channel before the pilot;
+stage 1 — autumn 2026 pilot of the networks course (course frozen, keep a
+pilot journal, decide ЛР5 squeeze and other changes only after);
+stage 2 — template repo so other teachers can start their own course;
+stage 3 — .NET course (winter–spring 2027, opens with the HTTP-evolution
+lecture, brings back Docker/k8s/OTel); stage 4 — small static teaching
+tools. Update the roadmap when a stage completes.
+
 ## Open threads
 
 - Course «Комп'ютерні мережі» — COMPLETE and FROZEN for the pilot student
