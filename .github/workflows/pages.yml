@@ -39,7 +39,13 @@ jobs:
           done
 
       - name: Export static site
-        run: python3 tools/export_static.py static-out
+        run: |
+          NAME="${{ github.event.repository.name }}"
+          case "$NAME" in
+            *.github.io) PREFIX="" ;;
+            *) PREFIX="/$NAME" ;;
+          esac
+          python3 tools/export_static.py static-out "$PREFIX"
 
       - uses: actions/upload-pages-artifact@v3
         with:

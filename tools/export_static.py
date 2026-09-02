@@ -78,14 +78,28 @@ def write_extras(out: Path) -> None:
         (out / "404.html").write_bytes(body)
 
 
+PREFIX_RE = re.compile(r'((?:href|src)=")/(?!/)')
+
+
+def apply_prefix(out: Path, prefix: str) -> None:
+    if not prefix:
+        return
+    for page in out.rglob("*.html"):
+        html = page.read_text(encoding="utf-8")
+        page.write_text(PREFIX_RE.sub(r"\1" + prefix + "/", html), encoding="utf-8")
+    print(f"prefixed internal links with {prefix}")
+
+
 def main() -> int:
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "static-out")
+    prefix = sys.argv[2].rstrip("/") if len(sys.argv) > 2 else ""
     if out.exists():
         shutil.rmtree(out)
     out.mkdir(parents=True)
     errors = crawl(out)
     copy_wwwroot(out)
     write_extras(out)
+    apply_prefix(out, prefix)
     return 1 if errors else 0
 
 

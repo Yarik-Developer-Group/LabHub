@@ -3,9 +3,11 @@
 Educational materials site (ASP.NET Core 8, Razor Pages). Public side is for
 students. Hosting: **GitHub Pages** — the app is the renderer and local
 preview, `tools/export_static.py` turns it into a static tree, and
-`.github/workflows/pages.yml` publishes it on every push to `main`
-(repo must be named `<org>.github.io` so the site lives at the domain root
-and absolute links keep working). Admin panel, Google OAuth and the content
+`.github/workflows/pages.yml` publishes it on every push to `main`. Any repo
+name works: the workflow derives the URL prefix from the repo name (empty for
+`<org>.github.io`, `/<repo>` otherwise) and the exporter rewrites all internal
+links with it. Live site: repo `LabHub` in org `Yarik-Developer-Group` →
+https://yarik-developer-group.github.io/LabHub/. Admin panel, Google OAuth and the content
 webhook still exist in code but are NOT used in production anymore (Azure
 hosting was dropped deliberately); do not build on them. Owner: Yaroslav
 (ybalaba@teamworkcommerce.com), chat language — Russian.
